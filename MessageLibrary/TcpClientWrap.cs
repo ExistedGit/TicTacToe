@@ -11,8 +11,8 @@ namespace MessageLibrary
         private TcpClient client;
         public TcpClient Tcp => client;
 
-        public event Action Connected;
-        public event Action Disconnected;
+        public event Action<TcpClientWrap> Connected;
+        public event Action<TcpClientWrap> Disconnected;
 
         public event Action<TcpClientWrap, Message> MessageReceived;
         public event Action<Message> MessageSent;
@@ -46,7 +46,7 @@ namespace MessageLibrary
                 return false;
             }
             if (client.Connected)
-                Connected?.Invoke();
+                Connected?.Invoke(this);
             
             return client.Connected;
         }
@@ -68,13 +68,13 @@ namespace MessageLibrary
             TcpClient client = ar.AsyncState as TcpClient;
             client.EndConnect(ar);
             if(client.Connected)
-                Connected?.Invoke();
+                Connected?.Invoke(this);
         }
         public void Disconnect()
         {
             client?.Close();
             client = null;
-            Disconnected?.Invoke();
+            Disconnected?.Invoke(this);
         }
         public bool Send(Message message)
         {

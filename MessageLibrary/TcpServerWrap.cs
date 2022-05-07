@@ -10,8 +10,8 @@ namespace MessageLibrary
 {
     public class TcpServerWrap
     {
-
-        public event Action<TcpClient> Connected;
+        public event Action<TcpServerWrap> Started;
+        public event Action<TcpClient> ClientConnected;
         private TcpListener listener;
         public void Start(int port)
         {
@@ -20,11 +20,12 @@ namespace MessageLibrary
 
             listener = new TcpListener(new IPEndPoint(IPAddress.Any, port));
             listener.Start(10);
+            Started?.Invoke(this);
             Task.Run(() => {
                 do
                 {
                     TcpClient client = listener.AcceptTcpClient();
-                    Connected?.Invoke(client);
+                    ClientConnected?.Invoke(client);
                     Task.Run(() => Receive(client));
                 } while (true);
                 });

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,20 +38,26 @@ namespace Server
             }
 
             Console.WriteLine("Запускаем сервер...");
+            server.Started += Server_Started;
             server.Start(port);
-            server.Connected += Server_Connected;
+            server.ClientConnected += Server_ClientConnected;
             server.MessageReceived += Server_MessageReceived;
+            Console.ReadKey();
+        }
+
+        private static void Server_ClientConnected(System.Net.Sockets.TcpClient obj)
+        {
+            Console.WriteLine("Connected: " + (obj.Client.RemoteEndPoint as IPEndPoint).ToString());
+            
         }
 
         private static void Server_MessageReceived(TcpClientWrap client, Message msg)
         {
             if(msg.Type== MessageType.Text)
-            {
                 Console.WriteLine(msg as TextMessage);
-            }
         }
 
-        private static void Server_Connected(System.Net.Sockets.TcpClient obj)
+        private static void Server_Started(TcpServerWrap server)
         {
             Console.WriteLine("Сервер запущен");
         }
