@@ -239,6 +239,7 @@ namespace Client
             {
                 cell.State = MyIcon;
 
+                IsMyTurn = false;
                 GameInfoMessage message = new GameInfoMessage(cell, RoomId);
                 Client.SendAsync(message);
                 Client.ReceiveAsync();
