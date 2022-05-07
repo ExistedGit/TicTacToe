@@ -13,7 +13,6 @@ namespace MessageLibrary
     [Serializable]
     public abstract partial class Message
     {
-
         private static BinaryFormatter bf = new BinaryFormatter();
         public MessageType Type { get; protected set; } = MessageType.Undefined;
         public DateTime Time { get; protected set; }
@@ -30,6 +29,12 @@ namespace MessageLibrary
             socket.BeginSend(array, 0, array.Length, SocketFlags.None, cb, socket);
         }
         public void StreamTo(Stream stream) => bf.Serialize(stream, this);
+
+        public static void ReceiveFromSocket(Socket socket, AsyncCallback cb)
+        {
+            byte[] buffer = new byte[8192];
+            socket.BeginReceive(buffer, 0, 8192, SocketFlags.None, cb, new ValueTuple<Socket, byte[]>(socket, buffer));
+        }
 
         public static Message FromNetworkStream(NetworkStream stream) => bf.Deserialize(stream) as Message;
 

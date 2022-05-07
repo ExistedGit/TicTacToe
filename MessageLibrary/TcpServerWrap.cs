@@ -26,9 +26,9 @@ namespace MessageLibrary
                 do
                 {
                     TcpClient client = listener.AcceptTcpClient();
-                    Task.Run(() => Receive(client));
+                    ReceiveAsync(client);
                 } while (true);
-                });
+            });
         }
         public event Action<TcpClientWrap, Message> MessageReceived;
         private void Receive(TcpClient client)
@@ -36,12 +36,27 @@ namespace MessageLibrary
             TcpClientWrap user = new TcpClientWrap(client);
             ClientConnected?.Invoke(user);
             user.Disconnected += ClientDisconnected;
+            user.MessageReceived += MessageReceived;
             do
             {
-                Message message = user.Receive();
-                MessageReceived?.Invoke(user, message);
+                user.Receive();
             } while (user.Tcp.Client.Available > 0);
             user.Disconnect();
+        }
+        private void ReceiveAsync(TcpClient client)
+        {
+            TcpClientWrap user = new TcpClientWrap(client);
+            ClientConnected?.Invoke(user);
+            user.Disconnected += ClientDisconnected;
+            user.MessageReceived += (c, msg) =>
+            {
+                c.Disconnect();
+            };
+            user.MessageReceived += MessageReceived;
+            do
+            {
+                user.ReceiveAsync();
+            } while (user.Tcp.Client.Available > 0);
         }
         public void Shutdown()
         {
