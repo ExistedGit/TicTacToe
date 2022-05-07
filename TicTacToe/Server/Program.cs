@@ -14,6 +14,7 @@ namespace Server
     class Program
     {
         static TcpServerWrap server = new TcpServerWrap();
+        static List<GameRoom> rooms = new List<GameRoom>();
         static string Prompt(string text)
         {
             Console.Write(text);
@@ -30,12 +31,12 @@ namespace Server
 
             string input = Prompt("Введите порт для прослушивания: ");
             int port = -1;
-            if(!int.TryParse(input, out port))
+            if (!int.TryParse(input, out port))
             {
                 ErrorMessage("Неверные данные");
                 return;
             }
-            if(port < 0 || port > ushort.MaxValue)
+            if (port < 0 || port > ushort.MaxValue)
             {
                 ErrorMessage($"Номер порта должен быть от 0 до {ushort.MaxValue}");
                 return;
@@ -43,29 +44,45 @@ namespace Server
 
             Console.WriteLine("Запускаем сервер...");
             server.Started += Server_Started;
-            server.ClientConnected += Server_ClientConnected;
-            server.ClientDisconnected += Server_ClientDisconnected;
+            server.ClientConnected += ClientConnected;
+            server.ClientDisconnected += ClientDisconnected;
             server.MessageReceived += Server_MessageReceived;
             server.Start(port);
-            
+
             Console.ReadKey();
         }
 
-        private static void Server_ClientDisconnected(TcpClientWrap obj) => Console.WriteLine("Disconnected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
+        private static void ClientDisconnected(TcpClientWrap obj) => Console.WriteLine("Disconnected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
 
-        private static void Server_ClientConnected(TcpClientWrap obj) => Console.WriteLine("Connected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
+        private static void ClientConnected(TcpClientWrap obj)
+        {
+            Console.WriteLine("Connected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
+
+        }
+
 
         private static void Server_MessageReceived(TcpClientWrap client, Message msg)
         {
-            switch (msg.Type) {
+            switch (msg.Type)
+            {
                 case MessageType.Text:
                     Console.WriteLine((client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString() + ": " + (msg as TextMessage).ToString());
                     break;
                 case MessageType.Custom:
-                    if(msg is UserConnectMessage)
+                    if (msg is UserConnectMessage)
                     {
                         UserConnectMessage userConnect = msg as UserConnectMessage;
                         Console.WriteLine("User " + userConnect.UserName + " joined // " + (client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
+                        Player player = new Player(userConnect.UserName, client);
+                        if (rooms.All(r => r.Full))
+                        {
+                            GameRoom newRoom = new GameRoom();
+                            newRoom.Player1 = player;
+                        }
+                        else
+                        {
+                            rooms.First(r => !r.Full).Player2 = player;
+                        }
                     }
                     break;
             }
