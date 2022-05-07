@@ -73,11 +73,13 @@
                 <TextBlock Grid.Column="1"
                            VerticalAlignment="Bottom"
                            Margin="5, 0, 0,0"
-                           Foreground="#768c9e">
+                           Foreground="Green">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding isMyTurn}"></DataTrigger>
+                                <DataTrigger Binding="{Binding isMyTurn}" Value="True">
+                                    <Setter Property="Text" Value="Your turn"></Setter>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
@@ -96,12 +98,37 @@
                      Foreground="White"/>
 
 
-            <TextBlock Grid.Row="0"
-                       Grid.Column="1"
-                       Text="Enemy name"
-                       VerticalAlignment="Bottom"
-                       Margin="5, 0, 0,0"
-                       Foreground="#768c9e"/>
+
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="Enemy name"
+                           VerticalAlignment="Bottom"
+                           Margin="5, 0, 0,0"
+                           Foreground="#768c9e"/>
+
+                <TextBlock Grid.Column="1"
+                           VerticalAlignment="Bottom"
+                           Margin="5, 0, 0,0"
+                           Foreground="DarkRed">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMyTurn}" Value="False">
+                                    <Setter Property="Text" Value="Enemy turn"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+
+            </Grid>
+          
 
 
 
