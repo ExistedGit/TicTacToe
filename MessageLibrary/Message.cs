@@ -25,6 +25,10 @@ namespace MessageLibrary
             return ms.ToArray();
         }
 
+        public void SendToAsync(Socket socket, AsyncCallback cb) {
+            byte[] array = ToByteArray();
+            socket.BeginSend(array, 0, array.Length, SocketFlags.None, cb, socket);
+        }
         public void StreamTo(Stream stream) => bf.Serialize(stream, this);
 
         public static Message FromNetworkStream(NetworkStream stream) => bf.Deserialize(stream) as Message;
