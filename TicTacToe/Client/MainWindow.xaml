@@ -73,11 +73,12 @@
                 <TextBlock Grid.Column="1"
                            VerticalAlignment="Bottom"
                            Margin="5, 0, 0,0"
-                           Foreground="Green">
+                           Foreground="Green"
+                           HorizontalAlignment="Right">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding isMyTurn}" Value="True">
+                                <DataTrigger Binding="{Binding IsMyTurn}" Value="True">
                                     <Setter Property="Text" Value="Your turn"></Setter>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -114,7 +115,8 @@
                 <TextBlock Grid.Column="1"
                            VerticalAlignment="Bottom"
                            Margin="5, 0, 0,0"
-                           Foreground="DarkRed">
+                           Foreground="DarkRed"
+                           HorizontalAlignment="Right">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>

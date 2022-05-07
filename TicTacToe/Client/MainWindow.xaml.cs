@@ -41,6 +41,9 @@ namespace Client
                 OnPropertyChanged();
             }
         }
+        public uint RoomId { get; set; }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         public CellState MyIcon
         {
@@ -164,15 +167,16 @@ namespace Client
 
                     isGamaRunning = true;
                     IsMyTurn = info.IsYourTurn;
+                    RoomId = info.RoomId;
                     break;
                 }
                 case "GameInfoMessage":
                 {
                     GameInfoMessage info = (GameInfoMessage)message;
 
-                    if (info.isGameEnded)
+                    if (info.IsGameOver)
                     {
-                        switch (info.isWinner)
+                        switch (info.IsWinner)
                         {
                             case true:
                                 MessageBox.Show("You winn");
@@ -234,7 +238,7 @@ namespace Client
             {
                 cell.State = MyIcon;
 
-                GameInfoMessage message = new GameInfoMessage(cell);
+                GameInfoMessage message = new GameInfoMessage(cell, RoomId);
                 Client.SendAsync(message);
                 Client.Receive();
             }
@@ -244,6 +248,13 @@ namespace Client
 
         #endregion
 
+        private void ClearField()
+        {
+            foreach (var item in Field)
+            {
+                item.State = CellState.Empty;
+            }
+        }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
