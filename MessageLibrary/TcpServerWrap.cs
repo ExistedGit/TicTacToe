@@ -14,6 +14,7 @@ namespace MessageLibrary
         public event Action<TcpClientWrap> ClientConnected;
         public event Action<TcpClientWrap> ClientDisconnected;
         private TcpListener listener;
+
         public void Start(int port)
         {
             if (listener != null)
