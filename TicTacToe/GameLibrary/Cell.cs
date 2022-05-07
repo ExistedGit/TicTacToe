@@ -33,6 +33,7 @@ namespace GameLibrary
             State = CellState.Empty;
         }
 
+        [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] String propertyName = "")
