@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="376" Width="412">
+        Title="MainWindow" Height="414" Width="444">
     <Grid Background="#242f3d">
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -83,14 +83,16 @@
                                 Margin="1"
                                 x:Name="Border"
                                 Background="#0e1621">
+                            
                             <Border.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></MouseBinding>
                             </Border.InputBindings>
-                            <Image x:Name="Image"/>
 
-
+                            <Image x:Name="Image"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
                         </Border>
- 
+
 
                         <DataTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">
@@ -108,7 +110,7 @@
                         </DataTemplate.Triggers>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-                
+
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate >
                         <UniformGrid Rows="3"  
