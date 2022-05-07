@@ -11,7 +11,8 @@ namespace MessageLibrary
     public class TcpServerWrap
     {
         public event Action<TcpServerWrap> Started;
-        public event Action<TcpClient> ClientConnected;
+        public event Action<TcpClientWrap> ClientConnected;
+        public event Action<TcpClientWrap> ClientDisconnected;
         private TcpListener listener;
         public void Start(int port)
         {
@@ -25,7 +26,6 @@ namespace MessageLibrary
                 do
                 {
                     TcpClient client = listener.AcceptTcpClient();
-                    ClientConnected?.Invoke(client);
                     Task.Run(() => Receive(client));
                 } while (true);
                 });
@@ -34,6 +34,8 @@ namespace MessageLibrary
         private void Receive(TcpClient client)
         {
             TcpClientWrap user = new TcpClientWrap(client);
+            ClientConnected?.Invoke(user);
+            user.Disconnected += ClientDisconnected;
             do
             {
                 Message message = user.Receive();

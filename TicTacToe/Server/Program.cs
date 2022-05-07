@@ -24,6 +24,8 @@ namespace Server
         }
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.Unicode;
+
             string input = Prompt("Введите порт для прослушивания: ");
             int port = -1;
             if(!int.TryParse(input, out port))
@@ -39,15 +41,21 @@ namespace Server
 
             Console.WriteLine("Запускаем сервер...");
             server.Started += Server_Started;
-            server.Start(port);
             server.ClientConnected += Server_ClientConnected;
+            server.ClientDisconnected += Server_ClientDisconnected;
             server.MessageReceived += Server_MessageReceived;
+            server.Start(port);
             Console.ReadKey();
         }
 
-        private static void Server_ClientConnected(System.Net.Sockets.TcpClient obj)
+        private static void Server_ClientDisconnected(TcpClientWrap obj)
         {
-            Console.WriteLine("Connected: " + (obj.Client.RemoteEndPoint as IPEndPoint).ToString());
+            Console.WriteLine("Disconnected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
+        }
+
+        private static void Server_ClientConnected(TcpClientWrap obj)
+        {
+            Console.WriteLine("Connected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
             
         }
 
