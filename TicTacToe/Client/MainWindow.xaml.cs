@@ -98,6 +98,7 @@ namespace Client
                 Client.Connected += OnClientConnected;
                 Client.Disconnected += OnClientDisconnected;
                 Client.ConnectFailed += OnConnectedFailed;
+                Client.MessageSent += OnMessageSent;
 
                 TB_ServerAddres.IsEnabled = false;
                 BTN_ConnectToServer.IsEnabled = false;
@@ -156,6 +157,20 @@ namespace Client
                        
         }
 
+        public void OnMessageSent(Message message)
+        {
+
+            switch (message.GetType().Name)
+            {
+                case "GameInfoMessage":
+                    isMyTurn = false;
+                    break;
+            }
+
+       
+            
+        }
+
         #endregion Events
 
 
@@ -170,8 +185,10 @@ namespace Client
         private void CellClick_Execute(object obj)
         {
             Cell cell = (Cell)obj;
-            cell.State = CellState.Circle;
+            cell.State = MyIcon;
 
+            GameInfoMessage message = new GameInfoMessage(cell);
+            Client.SendAsync(message);
         }
 
         #endregion
