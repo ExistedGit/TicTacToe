@@ -9,6 +9,7 @@ namespace MessageLibrary
 {
     public class TcpClientWrap
     {
+
         private IPEndPoint endPoint;
         private TcpClient client;
         public TcpClient Tcp => client;

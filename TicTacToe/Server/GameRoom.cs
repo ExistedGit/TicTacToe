@@ -3,6 +3,7 @@ using MessageLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,7 +38,11 @@ namespace Server
                 GameInfoMessage gameInfo = msg as GameInfoMessage;
                 if(gameInfo.Id == Id)
                 {
-                    Player secondPlayer = Player1.Client.Tcp.Equals(client) ? Player2 : Player1;
+                    
+                    Player secondPlayer = 
+                        (Player1.Client.Tcp.Client.RemoteEndPoint as  IPEndPoint).Address.ToString()
+                        == 
+                        (client.Tcp.Client.RemoteEndPoint as IPEndPoint).Address.ToString() ? Player2 : Player1;
                     Cell cell = gameInfo.UpdatedCell;
                     Cells[cell.X, cell.Y] = cell;
                     secondPlayer.Client.SendAsync(gameInfo);
