@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -114,6 +116,7 @@ namespace MessageLibrary
             if (client != null & client.Connected)
             {
                 message.SendToAsync(Tcp.Client, SendCB);
+                
                 return true;
             }
             return false;
@@ -147,7 +150,21 @@ namespace MessageLibrary
             ValueTuple<Socket, byte[]> tuple = (ValueTuple<Socket, byte[]>)ar.AsyncState;
             var(socket, array) = tuple;
             socket.EndReceive(ar);
-            MessageReceived?.Invoke(this, Message.FromByteArray(array));
+            int i = 0;
+            MemoryStream ms = new MemoryStream(array);
+            while (true)
+            {
+                try
+                {
+                    MessageReceived?.Invoke(this, Message.FromByteArray(array, ms));
+                }
+                catch (Exception)
+                {
+                    break;
+                }
+            }
+            byte[] buffer = new byte[8192];
+            socket.BeginReceive(buffer, 0, 8192, SocketFlags.None, ReceiveCB, new ValueTuple<Socket, byte[]>(socket, buffer));
         }
     }
 }

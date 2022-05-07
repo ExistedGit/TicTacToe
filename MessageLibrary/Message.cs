@@ -18,7 +18,6 @@ namespace MessageLibrary
             ms.Position = 0;
             return ms.ToArray();
         }
-
         public void SendToAsync(Socket socket, AsyncCallback cb) {
             byte[] array = ToByteArray();
             socket.BeginSend(array, 0, array.Length, SocketFlags.None, cb, socket);
@@ -34,9 +33,10 @@ namespace MessageLibrary
         public static Message FromNetworkStream(NetworkStream stream) => bf.Deserialize(stream) as Message;
 
         public static T FromNetworkStream<T>(NetworkStream stream) where T: Message => bf.Deserialize(stream) as T;
-        
+        public static Message FromByteArray(byte[] buffer, MemoryStream ms) => bf.Deserialize(ms) as Message;
         public static Message FromByteArray(byte[] buffer)
         {
+            
             MemoryStream ms = new MemoryStream(buffer);
             return bf.Deserialize(ms) as Message;
         }

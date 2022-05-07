@@ -22,6 +22,9 @@ namespace MessageLibrary
             listener = new TcpListener(new IPEndPoint(IPAddress.Any, port));
             listener.Start(10);
             Started?.Invoke(this);
+            ClientDisconnected += (client) => {
+                
+            };
             Task.Run(() => {
                 do
                 {
@@ -48,16 +51,13 @@ namespace MessageLibrary
             TcpClientWrap user = new TcpClientWrap(client);
             ClientConnected?.Invoke(user);
             user.Disconnected += ClientDisconnected;
-            user.MessageReceived += (c, msg) =>
-            {
-                //c.Disconnect();
-            };
             user.MessageReceived += MessageReceived;
-            do
-            {
-                user.ReceiveAsync();
-            } while (user.Tcp.Client.Available > 0);
+
+            user.ReceiveAsync();
         }
+
+        
+
         public void Shutdown()
         {
             listener?.Stop();

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -64,13 +65,16 @@ namespace Server
                     if(msg is UserConnectMessage)
                     {
                         UserConnectMessage userConnect = msg as UserConnectMessage;
-                        Console.WriteLine("User " + userConnect.UserName + " joined");
+                        Console.WriteLine("User " + userConnect.UserName + " joined // " + (client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
                     }
                     break;
             }
         }
 
-        private static void Server_Started(TcpServerWrap server) => Console.WriteLine("Сервер запущен");
+        private static void Server_Started(TcpServerWrap server)
+        {
+            Console.WriteLine("Сервер запущен");
+        }
 
     }
 }
