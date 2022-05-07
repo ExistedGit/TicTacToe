@@ -39,7 +39,8 @@
                 <Button Grid.Column="1"
                         Margin="5"
                         Content="Connect"
-                        x:Name="BTN_ConnectToServer"/>
+                        x:Name="BTN_ConnectToServer"
+                        Click="BTN_ConnectToServer_Click"/>
 
             </Grid>
 
@@ -65,12 +66,27 @@
         </Grid>
 
         <Border Grid.Row="2" Margin="5">
-            <ItemsControl ItemsSource="{Binding FieldView}">
+            <ItemsControl>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      
+                        <Border BorderThickness="2"
+                                BorderBrush="Black">
+                            
+                            <Image x:Name="Img"/>
+                        </Border>
+
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding State}" Value="">
+                                <Setter TargetName="Img" Property="Source" Value=""/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding State}" Value="">
+                                <Setter TargetName="Img" Property="Source" Value=""/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
+                
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate >
                         <UniformGrid Rows="3"  
