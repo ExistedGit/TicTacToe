@@ -13,6 +13,7 @@ namespace Client
     {
         private string currentEnemy;
         private bool isMyTurn;
+        private CellState myIcon;
 
         public TcpClientWrap Client { get; set; }
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
@@ -43,12 +44,12 @@ namespace Client
         public event PropertyChangedEventHandler PropertyChanged;
         public CellState MyIcon
         {
-            get => MyIcon;
+            get => myIcon;
             set
             {
                 if(value != CellState.Empty)
                 {
-                    MyIcon = value;
+                    myIcon = value;
                 }
             }
         }
@@ -169,11 +170,26 @@ namespace Client
                 {
                     GameInfoMessage info = (GameInfoMessage)message;
 
+                    if (info.isGameEnded)
+                    {
+                        switch (info.isWinner)
+                        {
+                            case true:
+                                MessageBox.Show("You winn");
+                                break;
+                            case false:
+                                MessageBox.Show("You lose");
+                                break;
+                        }
 
-                    Cell cell = Field.Where(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y).First();
-                    cell.State = info.UpdatedCell.State;
+                    }
+                    else
+                    {
+                        Cell cell = Field.Where(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y).First();
+                        cell.State = info.UpdatedCell.State;
 
-                    IsMyTurn = true;
+                        IsMyTurn = true;
+                    }
 
                     break;
                 }
@@ -207,14 +223,14 @@ namespace Client
 
         private bool CellClick_CanExecute(object obj)
         {
-            return true;
+            return isGamaRunning && isMyTurn;
         }
 
         private void CellClick_Execute(object obj)
         {
             Cell cell = (Cell)obj;
 
-            if(cell.State == CellState.Empty)
+            if(cell.State != CellState.Empty)
             {
                 cell.State = MyIcon;
 
