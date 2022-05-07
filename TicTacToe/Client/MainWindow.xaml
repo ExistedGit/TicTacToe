@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         Title="MainWindow" Height="376" Width="412">
-    <Grid>
+    <Grid Background="#242f3d">
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
             <RowDefinition Height="70"/>
@@ -21,8 +21,9 @@
 
             <TextBlock Grid.Row="0"
                        Text="Server address"
-                       VerticalAlignment="Center"
-                       Margin="5, 0, 0,0"/>
+                       VerticalAlignment="Bottom"
+                       Margin="5, 0, 0,0"
+                       Foreground="#768c9e"/>
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -34,13 +35,17 @@
                          Margin="5"
                          x:Name="TB_ServerAddres"
                          VerticalContentAlignment="Center"
-                         FontSize="20"/>
+                         FontSize="20"
+                         Background="#202b36"
+                         Foreground="White"/>
 
                 <Button Grid.Column="1"
                         Margin="5"
                         Content="Connect"
                         x:Name="BTN_ConnectToServer"
-                        Click="BTN_ConnectToServer_Click"/>
+                        Click="BTN_ConnectToServer_Click"
+                        Background="#1f2936"
+                        Foreground="#999999"/>
 
             </Grid>
 
@@ -54,52 +59,34 @@
 
 
             <TextBlock Grid.Row="0"
-                       Text="Your name"
-                       VerticalAlignment="Center"
-                       Margin="5, 0, 0,0"/>
+                       Text="User name"
+                       VerticalAlignment="Bottom"
+                       Margin="5, 0, 0,0"
+                       Foreground="#768c9e"/>
 
             <TextBox Grid.Row="1"
                      Margin="5"
                      VerticalContentAlignment="Center"
                      FontSize="20"
-                     x:Name="TB_UserName"/>
+                     x:Name="TB_UserName"
+                     Background="#202b36"
+                     Foreground="White"/>
 
         </Grid>
 
-        <Border Grid.Row="2" Margin="5">
-            <ItemsControl ItemsSource="{Binding Field}">
+        <Border Grid.Row="2" Margin="5" Background="#202b36">
+            <ItemsControl ItemsSource="{Binding Field}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border BorderThickness="3"
                                 BorderBrush="Black"
-                                CornerRadius="10"
                                 Margin="1"
                                 x:Name="Border"
-                                Background="Aqua">
+                                Background="#0e1621">
                             <Border.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></MouseBinding>
                             </Border.InputBindings>
-                            <!--<Image>
-                                --><!--<Image.Style>
-                                    <Style TargetType="Image">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding State}" Value="">
-                                                <Setter Property="Source" Value=""/>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding State}" Value="">
-                                                <Setter Property="Source" Value=""/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>--><!--
-                            </Image>-->
-
-                            <TextBlock x:Name="TB"
-                                       FontSize="30"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"/>
-
+                            <Image x:Name="Image"/>
 
 
                         </Border>
@@ -111,11 +98,11 @@
                             </Trigger>
 
                             <DataTrigger Binding="{Binding State}" Value="Circle">
-                                <Setter TargetName="TB" Property="Text" Value="0"/>
+                                <Setter TargetName="Image" Property="Source" Value="Resourses/circle.png"/>
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding State}" Value="Cross">
-                                <Setter TargetName="TB" Property="Text" Value="X"/>
+                                <Setter TargetName="Image" Property="Source" Value="Resourses/cross.png"/>
                             </DataTrigger>
 
                         </DataTemplate.Triggers>
