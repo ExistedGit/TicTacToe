@@ -63,31 +63,28 @@ namespace Server
 
         private static void Server_MessageReceived(TcpClientWrap client, Message msg)
         {
-            switch (msg.Type)
+            if (msg.Type == MessageType.Custom)
             {
-                case MessageType.Custom:
-                    if (msg is UserConnectMessage)
+                if (msg is UserConnectMessage)
+                {
+                    UserConnectMessage userConnect = msg as UserConnectMessage;
+                    Console.WriteLine("User " + userConnect.UserName + " joined // " + (client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
+                    Player player = new Player(userConnect.UserName, client);
+                    if (rooms.All(r => r.Full))
                     {
-                        UserConnectMessage userConnect = msg as UserConnectMessage;
-                        Console.WriteLine("User " + userConnect.UserName + " joined // " + (client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
-                        Player player = new Player(userConnect.UserName, client);
-                        if (rooms.All(r => r.Full))
-                        {
-                            GameRoom newRoom = new GameRoom();
-                            newRoom.Player1 = player;
-                            rooms.Add(newRoom);
-                            server.MessageReceived += newRoom.MessageReceived;
-                        }
-                        else
-                        {
-                            GameRoom room = rooms.First(r => !r.Full);
-                            room.Player2 = player;
-                            server.MessageReceived += room.MessageReceived;
-                            room.StartGame();
-                        }
-
+                        GameRoom newRoom = new GameRoom();
+                        newRoom.Player1 = player;
+                        rooms.Add(newRoom);
                     }
-                    break;
+                    else
+                    {
+                        GameRoom room = rooms.First(r => !r.Full);
+                        room.Player2 = player;
+                        server.MessageReceived += room.MessageReceived;
+                        room.StartGame();
+                    }
+
+                }
             }
         }
 

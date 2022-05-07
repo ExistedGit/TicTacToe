@@ -18,6 +18,7 @@ namespace Server
         public bool Full { get => Player1 != null && Player2 != null; }
         public uint Id { get; private set; } = IdCounter++;
         private static uint IdCounter = 0;
+        public Action<TcpClientWrap, Message> MsgReceivedAction { get; set; }
         public GameRoom()
         {
             Cells = new Cell[3, 3];
