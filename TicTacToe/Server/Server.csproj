@@ -54,6 +54,10 @@
       <Project>{1FB16189-8D14-4C0C-AF9D-AF26B57E19A0}</Project>
       <Name>MessageLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameLibrary\GameLibrary.csproj">
+      <Project>{1FF79F22-B43A-4731-AFFE-1EA892E4754F}</Project>
+      <Name>GameLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

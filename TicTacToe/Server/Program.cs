@@ -1,4 +1,5 @@
-﻿using MessageLibrary;
+﻿using GameLibrary;
+using MessageLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +56,18 @@ namespace Server
 
         private static void Server_MessageReceived(TcpClientWrap client, Message msg)
         {
-            if(msg.Type == MessageType.Text)
-                Console.WriteLine((client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString() + ": " + (msg as TextMessage).ToString());
+            switch (msg.Type) {
+                case MessageType.Text:
+                    Console.WriteLine((client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString() + ": " + (msg as TextMessage).ToString());
+                    break;
+                case MessageType.Custom:
+                    if(msg is UserConnectMessage)
+                    {
+                        UserConnectMessage userConnect = msg as UserConnectMessage;
+                        Console.WriteLine("User " + userConnect.UserName + " joined");
+                    }
+                    break;
+            }
         }
 
         private static void Server_Started(TcpServerWrap server) => Console.WriteLine("Сервер запущен");
