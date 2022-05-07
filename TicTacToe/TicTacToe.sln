@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{46589060-6FE3-4313-A021-A39F488F1AE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLibrary", "..\MessageLibrary\MessageLibrary.csproj", "{1FB16189-8D14-4C0C-AF9D-AF26B57E19A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{286DA82A-314D-46EC-90E8-8D352EE359CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1FB16189-8D14-4C0C-AF9D-AF26B57E19A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FB16189-8D14-4C0C-AF9D-AF26B57E19A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FB16189-8D14-4C0C-AF9D-AF26B57E19A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{286DA82A-314D-46EC-90E8-8D352EE359CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{286DA82A-314D-46EC-90E8-8D352EE359CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{286DA82A-314D-46EC-90E8-8D352EE359CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{286DA82A-314D-46EC-90E8-8D352EE359CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
