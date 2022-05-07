@@ -119,8 +119,7 @@
                                    />
 
                         </Border>
- 
-
+                        
                         <DataTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter TargetName="Border" Property="BorderBrush" Value="Red"></Setter>
