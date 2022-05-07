@@ -30,7 +30,7 @@ namespace Server
         }
         public void MessageReceived(TcpClientWrap client, Message msg)
         {
-                        
+
         }
 
     }
