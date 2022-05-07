@@ -78,10 +78,14 @@ namespace Server
                         {
                             GameRoom newRoom = new GameRoom();
                             newRoom.Player1 = player;
+                            rooms.Add(newRoom);
+                            server.MessageReceived += newRoom.MessageReceived;
                         }
                         else
                         {
-                            rooms.First(r => !r.Full).Player2 = player;
+                            GameRoom room = rooms.First(r => !r.Full);
+                            room.Player2 = player;
+                            server.MessageReceived += room.MessageReceived;
                         }
                     }
                     break;
