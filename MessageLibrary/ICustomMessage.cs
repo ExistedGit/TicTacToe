@@ -8,6 +8,6 @@ namespace MessageLibrary
 {
     public interface ICustomMessage
     {
-        string Type { get; }
+        string CustomType { get; }
     }
 }
