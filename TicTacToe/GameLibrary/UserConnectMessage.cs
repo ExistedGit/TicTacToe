@@ -10,6 +10,5 @@ namespace GameLibrary
         {
             this.Name = Name;
         }
-
     }
 }

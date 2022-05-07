@@ -11,6 +11,13 @@ namespace Client
         public TcpClientWrap Client { get; set; } 
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
 
+        public bool isConnected
+        {
+            get => Client.Tcp.Connected;
+        }
+
+        public bool isMyStep { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,6 +44,13 @@ namespace Client
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(TB_UserName.Text))
+            {
+                MessageBox.Show("Invalid user name", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
             IPAddress ipAddress;
             int port;
 
@@ -53,6 +67,10 @@ namespace Client
                 Client.Connected += OnClientConnected;
                 Client.Disconnected += OnClientDisconnected;
 
+                TB_ServerAddres.IsEnabled = false;
+                BTN_ConnectToServer.IsEnabled = false;
+                TB_UserName.IsEnabled = false;
+
                 Client.ConnectAsync();
             }
             else
@@ -62,9 +80,9 @@ namespace Client
 
         private void OnClientConnected(TcpClientWrap client)
         {
-            TB_ServerAddres.IsEnabled = false;
-            BTN_ConnectToServer.IsEnabled = false;
 
+            UserConnectMessage message = new UserConnectMessage();
+            client.SendAsync();
 
         }
 
@@ -74,6 +92,8 @@ namespace Client
             Client = null;
             TB_ServerAddres.IsEnabled = true;
             BTN_ConnectToServer.IsEnabled = true;
+            TB_UserName.IsEnabled = true;
+
         }
 
     }
