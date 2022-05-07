@@ -9,7 +9,7 @@ namespace MessageLibrary
     {
         private IPEndPoint endPoint;
         private TcpClient client;
-        public TcpClient Client => client;
+        public TcpClient Tcp => client;
 
         public event Action Connected;
         public event Action Disconnected;
@@ -32,7 +32,7 @@ namespace MessageLibrary
 
             client = tcpClient;
         }
-        public bool StartConnection()
+        public bool Connect()
         {
             if (client != null)
                 return client.Connected;
@@ -49,15 +49,33 @@ namespace MessageLibrary
                 Connected?.Invoke();
             
             return client.Connected;
-            
         }
-        public void CloseConnection()
+        public void ConnectAsync()
+        {
+            if (client != null)
+                return;
+            try
+            {
+                client = new TcpClient();
+                client.BeginConnect(endPoint.Address, endPoint.Port, ConnectCB, client);
+            }
+            catch (Exception)
+            {
+            }
+        }
+        private void ConnectCB(IAsyncResult ar)
+        {
+            TcpClient client = ar.AsyncState as TcpClient;
+            client.EndConnect(ar);
+            if(client.Connected)
+                Connected?.Invoke();
+        }
+        public void Disconnect()
         {
             client?.Close();
             client = null;
             Disconnected?.Invoke();
         }
-
         public bool Send(Message message)
         {
             if (client != null & client.Connected)
@@ -68,7 +86,7 @@ namespace MessageLibrary
             }
             return false;
         }
-        public Task<bool> SendAsync(Message message) => Task.Run(() => Send(message));
+        public void SendAsync(Message message) => Task.Run(() => Send(message));
         public Message Receive()
         {
             if (client != null & client.Connected)
