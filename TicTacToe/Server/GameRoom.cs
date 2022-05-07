@@ -1,4 +1,5 @@
 ﻿using GameLibrary;
+using MessageLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Server
 {
     public class GameRoom
     {
+        public static Random rng = new Random();
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
         public Cell[,] Cells { get; private set; }
@@ -22,7 +24,13 @@ namespace Server
         }
         public void StartGame()
         {
-            
+            bool turn = Convert.ToBoolean(rng.Next(0, 1));
+            Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, turn, CellState.Cross));
+            Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, !turn, CellState.Circle));
+        }
+        public void MessageReceived(TcpClientWrap client, Message msg)
+        {
+                        
         }
 
     }
