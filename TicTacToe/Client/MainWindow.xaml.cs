@@ -129,8 +129,6 @@ namespace Client
         {
             UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
             client.SendAsync(message);
-
-            client.ReceiveAsync();
         }
 
         private void OnConnectedFailed(TcpClientWrap client)
@@ -253,8 +251,7 @@ namespace Client
 
         private void ClearField()
         {
-            foreach (var item in Field)
-            {
+            foreach (var item in Field){
                 item.State = CellState.Empty;
             }
         }
