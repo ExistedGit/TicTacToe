@@ -77,10 +77,10 @@
                                 x:Name="Border"
                                 Background="Aqua">
                             <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftDoubleClick" Command=""></MouseBinding>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></MouseBinding>
                             </Border.InputBindings>
-                            <Image>
-                                <!--<Image.Style>
+                            <!--<Image>
+                                --><!--<Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding State}" Value="">
@@ -92,8 +92,16 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Image.Style>-->
-                            </Image>
+                                </Image.Style>--><!--
+                            </Image>-->
+
+                            <TextBlock x:Name="TB"
+                                       FontSize="30"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+
+
+
                         </Border>
  
 
@@ -101,6 +109,15 @@
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter TargetName="Border" Property="BorderBrush" Value="Red"></Setter>
                             </Trigger>
+
+                            <DataTrigger Binding="{Binding State}" Value="Circle">
+                                <Setter TargetName="TB" Property="Text" Value="0"/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding State}" Value="Cross">
+                                <Setter TargetName="TB" Property="Text" Value="X"/>
+                            </DataTrigger>
+
                         </DataTemplate.Triggers>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

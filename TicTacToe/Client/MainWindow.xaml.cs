@@ -10,18 +10,22 @@ namespace Client
     {
         public TcpClientWrap Client { get; set; } 
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
-
         public bool isConnected
         {
             get => Client.Tcp.Connected;
         }
-
+        public bool isGamaRunning { get; set; }
         public bool isMyStep { get; set; }
+
+        public Command CellClick { get; set; }
+
+
 
         public MainWindow()
         {
             InitializeComponent();
-
+            CellClick = new Command(CellClick_CanExecute, CellClick_Execute);
+        
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -30,9 +34,10 @@ namespace Client
                 }
             }
 
-
             DataContext = this;
         }
+
+        #region Events
 
         private void BTN_ConnectToServer_Click(object sender, RoutedEventArgs e)
         {
@@ -64,9 +69,10 @@ namespace Client
             if(int.TryParse(Address[1], out port) && port > 0 && port <= ushort.MaxValue)
             {
                 Client = new TcpClientWrap(ipAddress, port);
+
                 Client.Connected += OnClientConnected;
                 Client.Disconnected += OnClientDisconnected;
-                Client.ConnectFailed += OnConnectedFaild;
+                Client.ConnectFailed += OnConnectedFailed;
 
                 TB_ServerAddres.IsEnabled = false;
                 BTN_ConnectToServer.IsEnabled = false;
@@ -83,9 +89,12 @@ namespace Client
         {
             UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
             client.SendAsync(message);
+
+            UserConnectMessage message2 = new UserConnectMessage("Путин");
+            client.SendAsync(message);
         }
 
-        private void OnConnectedFaild(TcpClientWrap client)
+        private void OnConnectedFailed(TcpClientWrap client)
         {
             Client = null;
 
@@ -95,10 +104,8 @@ namespace Client
                 BTN_ConnectToServer.IsEnabled = true;
                 TB_UserName.IsEnabled = true;
             });
-           
-
+          
         }
-
 
         private void OnClientDisconnected(TcpClientWrap client)
         {
@@ -108,6 +115,28 @@ namespace Client
             TB_UserName.IsEnabled = true;
 
         }
+
+        #endregion Events
+
+
+
+        #region CellClick command
+
+        private bool CellClick_CanExecute(object obj)
+        {
+            return true;
+        }
+
+        private void CellClick_Execute(object obj)
+        {
+            Cell cell = (Cell)obj;
+            cell.State = CellState.Cross;
+
+        }
+
+        #endregion
+
+
 
     }
 }
