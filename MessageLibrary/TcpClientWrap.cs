@@ -25,13 +25,16 @@ namespace MessageLibrary
             endPoint = new IPEndPoint(ip, port);
             client = null;
         }
+
         public TcpClientWrap(TcpClient tcpClient)
         {
             if (tcpClient == null)
                 throw new ArgumentException("Подключение не может быть пустым");
 
             client = tcpClient;
+
         }
+
         public bool Connect()
         {
             if (client != null)
@@ -84,12 +87,14 @@ namespace MessageLibrary
             if(client.Connected)
                 Connected?.Invoke(this);
         }
+
         public void Disconnect()
         {
             Disconnected?.Invoke(this);
             client?.Close();
             client = null;
         }
+
         public bool Send(Message message)
         {
             if (client != null & client.Connected)
@@ -117,6 +122,7 @@ namespace MessageLibrary
             Socket socket = ar.AsyncState as Socket;
             socket.EndSend(ar);
         }
+
         public Message Receive()
         {
             if (client != null & client.Connected)

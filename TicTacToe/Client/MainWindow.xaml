@@ -66,23 +66,36 @@
         </Grid>
 
         <Border Grid.Row="2" Margin="5">
-            <ItemsControl>
+            <ItemsControl ItemsSource="{Binding Field}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderThickness="2"
-                                BorderBrush="Black">
-                            
-                            <Image x:Name="Img"/>
+                        <Border BorderThickness="3"
+                                BorderBrush="Black"
+                                CornerRadius="10"
+                                Margin="1"
+                                x:Name="Border"
+                                Background="Aqua">
+                            <Image>
+                                <!--<Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding State}" Value="">
+                                                <Setter Property="Source" Value=""/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding State}" Value="">
+                                                <Setter Property="Source" Value=""/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>-->
+                            </Image>
                         </Border>
 
                         <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding State}" Value="">
-                                <Setter TargetName="Img" Property="Source" Value=""/>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding State}" Value="">
-                                <Setter TargetName="Img" Property="Source" Value=""/>
-                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Red"></Setter>
+                            </Trigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
