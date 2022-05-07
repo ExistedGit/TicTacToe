@@ -2,17 +2,27 @@
 using System.Net;
 using System.Windows;
 using GameLibrary;
+using System.Collections.ObjectModel;
 
 namespace Client
 {
     public partial class MainWindow : Window
     {
-        public TcpClientWrap Client { get; set; }
-        public Observ
+        public TcpClientWrap Client { get; set; } 
+        public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    Field.Add(new Cell(i+1, j+1));
+                }
+            }
+
 
             DataContext = this;
         }
