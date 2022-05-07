@@ -25,13 +25,16 @@ namespace MessageLibrary
             endPoint = new IPEndPoint(ip, port);
             client = null;
         }
+
         public TcpClientWrap(TcpClient tcpClient)
         {
             if (tcpClient == null)
                 throw new ArgumentException("Подключение не может быть пустым");
 
             client = tcpClient;
+
         }
+
         public bool Connect()
         {
             if (client != null)
@@ -50,6 +53,7 @@ namespace MessageLibrary
             
             return client.Connected;
         }
+
         public void ConnectAsync()
         {
             if (client != null)
@@ -63,6 +67,7 @@ namespace MessageLibrary
             {
             }
         }
+
         private void ConnectCB(IAsyncResult ar)
         {
             TcpClient client = ar.AsyncState as TcpClient;
@@ -70,12 +75,14 @@ namespace MessageLibrary
             if(client.Connected)
                 Connected?.Invoke(this);
         }
+
         public void Disconnect()
         {
             client?.Close();
             client = null;
             Disconnected?.Invoke(this);
         }
+
         public bool Send(Message message)
         {
             if (client != null & client.Connected)
@@ -86,7 +93,9 @@ namespace MessageLibrary
             }
             return false;
         }
+
         public void SendAsync(Message message) => Task.Run(() => Send(message));
+
         public Message Receive()
         {
             if (client != null & client.Connected)
@@ -97,6 +106,7 @@ namespace MessageLibrary
             }
             return null;
         }
+
         public Task<Message> ReceiveAsync() => Task.Run(Receive);
     }
 }

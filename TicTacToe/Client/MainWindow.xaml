@@ -71,11 +71,24 @@
                     <DataTemplate>
                         <Border BorderThickness="2"
                                 BorderBrush="Black">
-                            
-                            <Image x:Name="Img"/>
+                            <Image>
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding State}" Value="">
+                                                <Setter Property="Source" Value=""/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding State}" Value="">
+                                                <Setter Property="Source" Value=""/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
                         </Border>
 
-                        <DataTemplate.Triggers>
+                        <!--<DataTemplate.Triggers>
                             <DataTrigger Binding="{Binding State}" Value="">
                                 <Setter TargetName="Img" Property="Source" Value=""/>
                             </DataTrigger>
@@ -83,7 +96,7 @@
                             <DataTrigger Binding="{Binding State}" Value="">
                                 <Setter TargetName="Img" Property="Source" Value=""/>
                             </DataTrigger>
-                        </DataTemplate.Triggers>
+                        </DataTemplate.Triggers>-->
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Windows;
-using MessageLibrary;
+﻿using MessageLibrary;
 using System.Net;
-using System.Net.Sockets;
+using System.Windows;
+using GameLibrary;
 
 namespace Client
 {
     public partial class MainWindow : Window
     {
         public TcpClientWrap Client { get; set; }
+        public Observ
 
         public MainWindow()
         {
@@ -23,31 +23,31 @@ namespace Client
 
             if (Address.Length != 2)
             {
-                MessageBox.Show("Invalid input", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Invalid structure", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-
             IPAddress ipAddress;
+            int port;
 
-            if (!IPAddress.TryParse(Address[0], out ipAddress))
-            {
+            if (!IPAddress.TryParse(Address[0], out ipAddress)) {
                 MessageBox.Show("Invalid ip address", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return ;
             }
 
-            int port;
+            
 
             if(int.TryParse(Address[1], out port) && port > 0 && port <= ushort.MaxValue)
             {
                 Client = new TcpClientWrap(ipAddress, port);
                 Client.Connected += OnClientConnected;
+                Client.Disconnected += OnClientDisconnected;
+
                 Client.ConnectAsync();
             }
             else
-            {
                 MessageBox.Show("Invalid port", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+
         }
 
         private void OnClientConnected(TcpClientWrap client)
@@ -55,8 +55,15 @@ namespace Client
             TB_ServerAddres.IsEnabled = false;
             BTN_ConnectToServer.IsEnabled = false;
 
-            TextMessage message = new TextMessage("Путін хуйло!");
-            client.SendAsync(message);
+
+        }
+
+
+        private void OnClientDisconnected(TcpClientWrap client)
+        {
+            Client = null;
+            TB_ServerAddres.IsEnabled = true;
+            BTN_ConnectToServer.IsEnabled = true;
         }
 
     }
