@@ -37,7 +37,7 @@ namespace Server
                 GameInfoMessage gameInfo = msg as GameInfoMessage;
                 if(gameInfo.Id == Id)
                 {
-                    Player secondPlayer = Player1.Client.Tcp.Client.RemoteEndPoint.Equals(client) ? Player2 : Player1;
+                    Player secondPlayer = Player1.Client.Tcp.Equals(client) ? Player2 : Player1;
                     Cell cell = gameInfo.UpdatedCell;
                     Cells[cell.X, cell.Y] = cell;
                     secondPlayer.Client.SendAsync(gameInfo);
