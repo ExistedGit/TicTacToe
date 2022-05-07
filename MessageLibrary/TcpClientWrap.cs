@@ -149,8 +149,15 @@ namespace MessageLibrary
         {
             ValueTuple<Socket, byte[]> tuple = (ValueTuple<Socket, byte[]>)ar.AsyncState;
             var(socket, array) = tuple;
-            socket.EndReceive(ar);
-            int i = 0;
+            try
+            {
+                socket.EndReceive(ar);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("TcpClientWrap.Receive: SOCKET EXCEPTION");
+                return;
+            }
             MemoryStream ms = new MemoryStream(array);
             while (true)
             {
