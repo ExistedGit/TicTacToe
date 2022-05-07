@@ -5,6 +5,7 @@ using GameLibrary;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace Client
 {
@@ -108,7 +109,7 @@ namespace Client
                 Client.Disconnected += OnClientDisconnected;
                 Client.ConnectFailed += OnConnectedFailed;
                 Client.MessageSent += OnMessageSent;
-
+                Client.MessageReceived += OnMessageRecived;
                 TB_ServerAddres.IsEnabled = false;
                 BTN_ConnectToServer.IsEnabled = false;
                 TB_UserName.IsEnabled = false;
@@ -155,13 +156,31 @@ namespace Client
 
             switch (message.GetType().Name)
             {
-                case "InfoStartGameMessage":
-                    InfoStartGameMessage info = (InfoStartGameMessage)message;
+                case "StartGameMessage":
+                {
+                    StartGameMessage info = (StartGameMessage)message;
                     CurrentEnemy = info.EnemyUserName;
 
                     isGamaRunning = true;
                     IsMyTurn = info.IsYourTurn;
                     break;
+                }
+                case "GameInfoMessage":
+                {
+                    GameInfoMessage info = (GameInfoMessage)message;
+
+
+                    Cell cell = Field.Where(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y).First();
+                    cell.State = info.UpdatedCell.State;
+
+                    IsMyTurn = true;
+
+                    break;
+                }
+                   
+                    
+                 
+
             }
                        
         }
@@ -194,10 +213,17 @@ namespace Client
         private void CellClick_Execute(object obj)
         {
             Cell cell = (Cell)obj;
-            cell.State = MyIcon;
 
-            GameInfoMessage message = new GameInfoMessage(cell);
-            Client.SendAsync(message);
+            if(cell.State == CellState.Empty)
+            {
+                cell.State = MyIcon;
+
+                GameInfoMessage message = new GameInfoMessage(cell);
+                Client.SendAsync(message);
+                Client.Receive();
+            }
+
+        
         }
 
         #endregion
