@@ -65,9 +65,6 @@ namespace Server
         {
             switch (msg.Type)
             {
-                case MessageType.Text:
-                    Console.WriteLine((client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString() + ": " + (msg as TextMessage).ToString());
-                    break;
                 case MessageType.Custom:
                     if (msg is UserConnectMessage)
                     {

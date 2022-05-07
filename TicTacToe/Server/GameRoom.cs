@@ -15,6 +15,8 @@ namespace Server
         public Player Player2 { get; set; }
         public Cell[,] Cells { get; private set; }
         public bool Full { get => Player1 != null && Player2 != null; }
+        public uint Id { get; private set; } = IdCounter++;
+        private static uint IdCounter = 0;
         public GameRoom()
         {
             Cells = new Cell[3, 3];
@@ -25,12 +27,23 @@ namespace Server
         public void StartGame()
         {
             bool turn = Convert.ToBoolean(rng.Next(0, 1));
-            Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, turn, CellState.Cross));
-            Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, !turn, CellState.Circle));
+            Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, Id, turn, CellState.Cross));
+            Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, Id, !turn, CellState.Circle));
         }
         public void MessageReceived(TcpClientWrap client, Message msg)
         {
-
+            if(msg is GameInfoMessage)
+            {
+                
+                GameInfoMessage gameInfo = msg as GameInfoMessage;
+                if(gameInfo.Id == Id)
+                {
+                    Player secondPlayer = Player1.Client.Tcp.Client.RemoteEndPoint.Equals(client) ? Player2 : Player1;
+                    Cell cell = gameInfo.UpdatedCell;
+                    Cells[cell.X, cell.Y] = cell;
+                    secondPlayer.Client.SendAsync(msg);
+                }
+            }
         }
 
     }

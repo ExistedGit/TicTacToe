@@ -6,20 +6,24 @@ namespace GameLibrary
     public class GameInfoMessage : Message
     {
         public Cell UpdatedCell { get; set; }
-        public bool isGameEnded { get; set; }
-        public bool isWinner { get; set; }
+        public bool IsGameOver { get; set; }
+        public bool IsWinner { get; set; }
+        public uint Id { get; set; }
 
-
-        public GameInfoMessage(Cell UpdatedCell)
+        public GameInfoMessage(Cell UpdatedCell, uint roomId)
         {
             this.UpdatedCell = UpdatedCell;
+            Type = MessageType.Custom;
+            Id = roomId;
         }
 
-        public GameInfoMessage(Cell UpdatedCell, bool isGameEnded, bool isWinner)
+        public GameInfoMessage(Cell UpdatedCell, uint roomId, bool isGameEnded, bool isWinner)
         {
             this.UpdatedCell = UpdatedCell;
-            this.isGameEnded = isGameEnded;
-            this.isWinner = isWinner;
+            this.IsGameOver = isGameEnded;
+            this.IsWinner = isWinner;
+            Id = roomId;
+            Type = MessageType.Custom;
         }
 
     }
