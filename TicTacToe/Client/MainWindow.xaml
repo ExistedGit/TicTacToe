@@ -61,7 +61,8 @@
             <TextBox Grid.Row="1"
                      Margin="5"
                      VerticalContentAlignment="Center"
-                     FontSize="20"/>
+                     FontSize="20"
+                     x:Name="TB_UserName"/>
 
         </Grid>
 
@@ -75,6 +76,9 @@
                                 Margin="1"
                                 x:Name="Border"
                                 Background="Aqua">
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command=""></MouseBinding>
+                            </Border.InputBindings>
                             <Image>
                                 <!--<Image.Style>
                                     <Style TargetType="Image">
@@ -91,6 +95,7 @@
                                 </Image.Style>-->
                             </Image>
                         </Border>
+ 
 
                         <DataTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">
