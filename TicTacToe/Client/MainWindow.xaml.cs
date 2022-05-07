@@ -129,6 +129,7 @@ namespace Client
         {
             UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
             client.SendAsync(message);
+            Client.ReceiveAsync();
 
         }
 
