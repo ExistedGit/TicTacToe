@@ -168,6 +168,7 @@ namespace Client
                     isGamaRunning = true;
                     IsMyTurn = info.IsYourTurn;
                     RoomId = info.RoomId;
+                    MyIcon = info.Cell;
                     break;
                 }
                 case "GameInfoMessage":
