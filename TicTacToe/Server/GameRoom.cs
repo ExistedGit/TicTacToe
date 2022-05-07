@@ -26,7 +26,7 @@ namespace Server
         }
         public void StartGame()
         {
-            bool turn = Convert.ToBoolean(rng.Next(0, 1));
+            bool turn = Convert.ToBoolean(rng.Next(0, 2));
             Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, Id, turn, CellState.Cross));
             Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, Id, !turn, CellState.Circle));
         }
@@ -34,14 +34,13 @@ namespace Server
         {
             if(msg is GameInfoMessage)
             {
-                
                 GameInfoMessage gameInfo = msg as GameInfoMessage;
                 if(gameInfo.Id == Id)
                 {
                     Player secondPlayer = Player1.Client.Tcp.Client.RemoteEndPoint.Equals(client) ? Player2 : Player1;
                     Cell cell = gameInfo.UpdatedCell;
                     Cells[cell.X, cell.Y] = cell;
-                    secondPlayer.Client.SendAsync(msg);
+                    secondPlayer.Client.SendAsync(gameInfo);
                 }
             }
         }
