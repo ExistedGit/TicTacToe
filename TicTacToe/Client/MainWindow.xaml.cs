@@ -88,6 +88,7 @@ namespace Client
         private void OnConnectedFaild(TcpClientWrap client)
         {
             Client = null;
+
             Dispatcher.Invoke(() =>
             {
                 TB_ServerAddres.IsEnabled = true;
@@ -95,6 +96,7 @@ namespace Client
                 TB_UserName.IsEnabled = true;
             });
            
+
         }
 
 
