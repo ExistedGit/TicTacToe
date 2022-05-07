@@ -151,19 +151,9 @@ namespace Client
 
                     isGamaRunning = true;
                     isMyTurn = info.IsYourTurn;
-                   
                     break;
             }
-
-            if(message is UserConnectMessage)
-            {
-               
-            }
-
-            
-
-            
-
+                       
         }
 
         #endregion Events
