@@ -94,5 +94,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MessageLibrary\MessageLibrary.csproj">
+      <Project>{1fb16189-8d14-4c0c-af9d-af26b57e19a0}</Project>
+      <Name>MessageLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

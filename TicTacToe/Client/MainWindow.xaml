@@ -5,12 +5,81 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="354" Width="389">
+        Title="MainWindow" Height="376" Width="412">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
-            <RowDefinition Height="80"/>
-            <RowDefinition/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Text="Server address"
+                       VerticalAlignment="Center"
+                       Margin="5, 0, 0,0"/>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         Margin="5"
+                         x:Name="TB_ServerAddres"
+                         VerticalContentAlignment="Center"
+                         FontSize="20"/>
+
+                <Button Grid.Column="1"
+                        Margin="5"
+                        Content="Connect"
+                        x:Name="BTN_ConnectToServer"/>
+
+            </Grid>
+
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+
+            <TextBlock Grid.Row="0"
+                       Text="Your name"
+                       VerticalAlignment="Center"
+                       Margin="5, 0, 0,0"/>
+
+            <TextBox Grid.Row="1"
+                     Margin="5"
+                     VerticalContentAlignment="Center"
+                     FontSize="20"/>
+
+        </Grid>
+
+        <Border Grid.Row="2" Margin="5">
+            <ItemsControl ItemsSource="{Binding FieldView}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate >
+                        <UniformGrid Rows="3"  
+                                     Columns="3"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Border>
+
+
     </Grid>
 </Window>
