@@ -19,7 +19,7 @@ namespace Client
             get => Client.Tcp.Connected;
         }
         public bool isGamaRunning { get; set; }
-        public bool isMyStep { get; set; }
+        public bool isMyTurn { get; set; }
         public Command CellClick { get; set; }
         public string CurrentEnemy
         {
@@ -31,6 +31,17 @@ namespace Client
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
+        public CellState MyIcon
+        {
+            get => MyIcon;
+            set
+            {
+                if(value != CellState.Empty)
+                {
+                    MyIcon = value;
+                }
+            }
+        }
 
 
         public MainWindow()
@@ -134,16 +145,19 @@ namespace Client
 
             switch (message.GetType().Name)
             {
-                case "UserConnectMessage":
+                case "InfoStartGameMessage":
+                    InfoStartGameMessage info = (InfoStartGameMessage)message;
+                    CurrentEnemy = info.EnemyUserName;
 
+                    isGamaRunning = true;
+                    isMyTurn = info.IsYourTurn;
+                   
                     break;
             }
 
             if(message is UserConnectMessage)
             {
-                UserConnectMessage userConnectMessage = (UserConnectMessage)message;
-                CurrentEnemy = userConnectMessage.UserName;
-                client.Receive();
+               
             }
 
             

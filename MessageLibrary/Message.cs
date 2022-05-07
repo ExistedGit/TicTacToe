@@ -11,6 +11,7 @@ namespace MessageLibrary
         private static BinaryFormatter bf = new BinaryFormatter();
         public MessageType Type { get; protected set; } = MessageType.Undefined;
         public DateTime Time { get; protected set; }
+
         public byte[] ToByteArray()
         {
             MemoryStream ms = new MemoryStream();
