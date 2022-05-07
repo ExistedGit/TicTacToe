@@ -3,12 +3,16 @@ using System.Net;
 using System.Windows;
 using GameLibrary;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Client
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public TcpClientWrap Client { get; set; } 
+        private string currentEnemy;
+
+        public TcpClientWrap Client { get; set; }
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
         public bool isConnected
         {
@@ -16,9 +20,17 @@ namespace Client
         }
         public bool isGamaRunning { get; set; }
         public bool isMyStep { get; set; }
-
         public Command CellClick { get; set; }
-
+        public string CurrentEnemy
+        {
+            get => currentEnemy;
+            set
+            {
+                currentEnemy = value;
+                OnPropertyChanged();
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
 
         public MainWindow()
@@ -36,6 +48,8 @@ namespace Client
 
             DataContext = this;
         }
+
+       
 
         #region Events
 
@@ -90,8 +104,7 @@ namespace Client
             UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
             client.SendAsync(message);
 
-            UserConnectMessage message2 = new UserConnectMessage("Путин");
-            client.SendAsync(message);
+            client.ReceiveAsync();
         }
 
         private void OnConnectedFailed(TcpClientWrap client)
@@ -116,6 +129,29 @@ namespace Client
 
         }
 
+        private void OnMessageRecived(TcpClientWrap client, Message message)
+        {
+
+            switch (message.GetType().Name)
+            {
+                case "UserConnectMessage":
+
+                    break;
+            }
+
+            if(message is UserConnectMessage)
+            {
+                UserConnectMessage userConnectMessage = (UserConnectMessage)message;
+                CurrentEnemy = userConnectMessage.UserName;
+                client.Receive();
+            }
+
+            
+
+            
+
+        }
+
         #endregion Events
 
 
@@ -130,13 +166,17 @@ namespace Client
         private void CellClick_Execute(object obj)
         {
             Cell cell = (Cell)obj;
-            cell.State = CellState.Cross;
+            cell.State = CellState.Circle;
 
         }
 
         #endregion
 
 
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
     }
 }
