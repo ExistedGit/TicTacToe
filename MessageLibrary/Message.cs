@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MessageLibrary
+{
+    [Serializable]
+    public abstract partial class Message
+    {
+
+        private static BinaryFormatter bf = new BinaryFormatter();
+        public MessageType Type { get; protected set; } = MessageType.Undefined;
+        public DateTime Time { get; protected set; }
+        public byte[] ToByteArray()
+        {
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, this);
+            ms.Position = 0;
+            return ms.ToArray();
+        }
+
+        public void StreamTo(Stream stream) => bf.Serialize(stream, this);
+
+        public static Message FromNetworkStream(NetworkStream stream) => bf.Deserialize(stream) as Message;
+
+        public static T FromNetworkStream<T>(NetworkStream stream) where T: Message => bf.Deserialize(stream) as T;
+        
+        public static Message FromByteArray(byte[] buffer)
+        {
+            MemoryStream ms = new MemoryStream(buffer);
+            return bf.Deserialize(ms) as Message;
+        }
+        public static T FromByteArray<T> (byte[] buffer) where T : Message
+        {
+            MemoryStream ms = new MemoryStream(buffer);
+            return bf.Deserialize(ms) as T;
+        }
+    }
+}
