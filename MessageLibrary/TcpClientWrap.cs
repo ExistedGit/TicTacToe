@@ -9,6 +9,7 @@ namespace MessageLibrary
     {
         private IPEndPoint endPoint;
         private TcpClient client;
+
         public TcpClient Client => client;
 
         public event Action Connected;
@@ -32,6 +33,8 @@ namespace MessageLibrary
 
             client = tcpClient;
         }
+
+
         public bool StartConnection()
         {
             if (client != null)
@@ -51,6 +54,8 @@ namespace MessageLibrary
             return client.Connected;
             
         }
+
+
         public void CloseConnection()
         {
             client?.Close();
@@ -68,6 +73,7 @@ namespace MessageLibrary
             }
             return false;
         }
+
         public Task<bool> SendAsync(Message message) => Task.Run(() => Send(message));
         public Message Receive()
         {
