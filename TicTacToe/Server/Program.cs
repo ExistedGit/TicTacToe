@@ -86,7 +86,9 @@ namespace Server
                             GameRoom room = rooms.First(r => !r.Full);
                             room.Player2 = player;
                             server.MessageReceived += room.MessageReceived;
+                            room.StartGame();
                         }
+
                     }
                     break;
             }
