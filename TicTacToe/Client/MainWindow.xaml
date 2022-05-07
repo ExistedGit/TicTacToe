@@ -57,18 +57,47 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
 
             <TextBlock Grid.Row="0"
+                       Grid.Column="0"
                        Text="User name"
                        VerticalAlignment="Bottom"
                        Margin="5, 0, 0,0"
                        Foreground="#768c9e"/>
 
             <TextBox Grid.Row="1"
+                     Grid.Column="0"
                      Margin="5"
                      VerticalContentAlignment="Center"
                      FontSize="20"
                      x:Name="TB_UserName"
+                     Background="#202b36"
+                     Foreground="White"/>
+
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="1"
+                       Text="Enemy name"
+                       VerticalAlignment="Bottom"
+                       Margin="5, 0, 0,0"
+                       Foreground="#768c9e"/>
+
+
+
+
+            <TextBox Grid.Row="1"
+                     Text="{Binding CurrentEnemy, TargetNullValue=Is absent}"
+                     IsReadOnly="True"
+                     Grid.Column="1"
+                     Margin="5"
+                     VerticalContentAlignment="Center"
+                     FontSize="20"
+                     x:Name="TB_EnemyUserName"
                      Background="#202b36"
                      Foreground="White"/>
 
