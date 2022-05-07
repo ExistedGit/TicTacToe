@@ -129,6 +129,7 @@ namespace Client
         {
             UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
             client.SendAsync(message);
+
         }
 
         private void OnConnectedFailed(TcpClientWrap client)
@@ -212,6 +213,9 @@ namespace Client
             {
                 case "GameInfoMessage":
                     IsMyTurn = false;
+                    break;
+                case "UserConnectMessage":
+                    Client.ReceiveAsync();
                     break;
             }
 
