@@ -240,7 +240,7 @@ namespace Client
 
                 GameInfoMessage message = new GameInfoMessage(cell, RoomId);
                 Client.SendAsync(message);
-                Client.Receive();
+                Client.ReceiveAsync();
             }
 
         
