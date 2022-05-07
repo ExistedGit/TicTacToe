@@ -11,6 +11,7 @@ namespace GameLibrary
         Circle
     }
 
+    [Serializable]
     public class Cell : INotifyPropertyChanged
     {
         private CellState state;
