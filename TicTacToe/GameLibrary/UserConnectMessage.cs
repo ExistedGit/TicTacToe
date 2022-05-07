@@ -1,7 +1,9 @@
 ﻿using MessageLibrary;
+using System;
 
 namespace GameLibrary
 {
+    [Serializable]
     public class UserConnectMessage : Message
     {
         public string UserName { get; set; }

@@ -66,6 +66,7 @@ namespace Client
                 Client = new TcpClientWrap(ipAddress, port);
                 Client.Connected += OnClientConnected;
                 Client.Disconnected += OnClientDisconnected;
+                Client.ConnectFailed += OnConnectedFaild;
 
                 TB_ServerAddres.IsEnabled = false;
                 BTN_ConnectToServer.IsEnabled = false;
@@ -80,10 +81,20 @@ namespace Client
 
         private void OnClientConnected(TcpClientWrap client)
         {
+            UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
+            client.SendAsync(message);
+        }
 
-            UserConnectMessage message = new UserConnectMessage();
-            client.SendAsync();
-
+        private void OnConnectedFaild(TcpClientWrap client)
+        {
+            Client = null;
+            Dispatcher.Invoke(() =>
+            {
+                TB_ServerAddres.IsEnabled = true;
+                BTN_ConnectToServer.IsEnabled = true;
+                TB_UserName.IsEnabled = true;
+            });
+           
         }
 
 
