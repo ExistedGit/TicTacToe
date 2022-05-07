@@ -45,29 +45,21 @@ namespace Server
             server.ClientDisconnected += Server_ClientDisconnected;
             server.MessageReceived += Server_MessageReceived;
             server.Start(port);
+            
             Console.ReadKey();
         }
 
-        private static void Server_ClientDisconnected(TcpClientWrap obj)
-        {
-            Console.WriteLine("Disconnected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
-        }
+        private static void Server_ClientDisconnected(TcpClientWrap obj) => Console.WriteLine("Disconnected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
 
-        private static void Server_ClientConnected(TcpClientWrap obj)
-        {
-            Console.WriteLine("Connected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
-            
-        }
+        private static void Server_ClientConnected(TcpClientWrap obj) => Console.WriteLine("Connected: " + (obj.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
 
         private static void Server_MessageReceived(TcpClientWrap client, Message msg)
         {
-            if(msg.Type== MessageType.Text)
-                Console.WriteLine(msg as TextMessage);
+            if(msg.Type == MessageType.Text)
+                Console.WriteLine((client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString() + ": " + (msg as TextMessage).ToString());
         }
 
-        private static void Server_Started(TcpServerWrap server)
-        {
-            Console.WriteLine("Сервер запущен");
-        }
+        private static void Server_Started(TcpServerWrap server) => Console.WriteLine("Сервер запущен");
+
     }
 }

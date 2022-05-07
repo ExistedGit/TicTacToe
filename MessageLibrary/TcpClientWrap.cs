@@ -53,11 +53,14 @@ namespace MessageLibrary
             
             return client.Connected;
         }
-
-        public void ConnectAsync()
+        /// <summary>
+        /// Асинхронно подключает клиент к адресу
+        /// </summary>
+        /// <returns>Была ли начата операция подключения</returns>
+        public bool ConnectAsync()
         {
             if (client != null)
-                return;
+                return false;
             try
             {
                 client = new TcpClient();
@@ -65,22 +68,31 @@ namespace MessageLibrary
             }
             catch (Exception)
             {
+                return false;
             }
+            return true;
         }
-
+        public event Action<TcpClientWrap> ConnectFailed;
         private void ConnectCB(IAsyncResult ar)
         {
             TcpClient client = ar.AsyncState as TcpClient;
-            client.EndConnect(ar);
+            try
+            {
+                client.EndConnect(ar);
+            }
+            catch (Exception)
+            {
+                ConnectFailed?.Invoke(this);
+            }
             if(client.Connected)
                 Connected?.Invoke(this);
         }
 
         public void Disconnect()
         {
+            Disconnected?.Invoke(this);
             client?.Close();
             client = null;
-            Disconnected?.Invoke(this);
         }
 
         public bool Send(Message message)
@@ -93,8 +105,23 @@ namespace MessageLibrary
             }
             return false;
         }
-
-        public void SendAsync(Message message) => Task.Run(() => Send(message));
+        /// <summary>
+        /// Асинхронно отправляет сообщение клиента
+        /// </summary>
+        /// <param name="message">Сообщение</param>
+        /// <returns>Была ли начата операция отправки</returns>
+        public bool SendAsync(Message message) {
+            if (client != null & client.Connected)
+            {
+                message.SendToAsync(Tcp.Client, SendCB);
+                return true;
+            }
+            return false;
+        }
+        private void SendCB(IAsyncResult ar) {
+            Socket socket = ar.AsyncState as Socket;
+            socket.EndSend(ar);
+        }
 
         public Message Receive()
         {
@@ -106,7 +133,21 @@ namespace MessageLibrary
             }
             return null;
         }
-
-        public Task<Message> ReceiveAsync() => Task.Run(Receive);
+        public bool ReceiveAsync()
+        {
+            if (client != null & client.Connected)
+            {
+                Message.ReceiveFromSocket(Tcp.Client, ReceiveCB);
+                return true;
+            }
+            return false;
+        }
+        private void ReceiveCB(IAsyncResult ar)
+        {
+            ValueTuple<Socket, byte[]> tuple = (ValueTuple<Socket, byte[]>)ar.AsyncState;
+            var(socket, array) = tuple;
+            socket.EndReceive(ar);
+            MessageReceived?.Invoke(this, Message.FromByteArray(array));
+        }
     }
 }

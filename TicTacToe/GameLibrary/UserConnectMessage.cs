@@ -2,13 +2,17 @@
 
 namespace GameLibrary
 {
-    public class UserConnectMessage :  Message
+    public class UserConnectMessage :  Message, ICustomMessage
     {
-        public string Name;
+        public string UserName { get; set; }
 
-        public UserConnectMessage(string Name)
+        public UserConnectMessage(string userName)
         {
-            this.Name = Name;
+            UserName = userName;
+            CustomType = "user_connect";
+            Type = MessageType.Custom;
         }
+
+        public string CustomType { get; private set; }
     }
 }
