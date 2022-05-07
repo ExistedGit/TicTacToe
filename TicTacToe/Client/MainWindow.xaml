@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="376" Width="412">
+        Title="MainWindow" Height="400" Width="450">
     <Grid Background="#242f3d">
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -86,8 +86,8 @@
                             <Border.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></MouseBinding>
                             </Border.InputBindings>
-                            <Image x:Name="Image"/>
-
+                            <Image x:Name="img"  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   />
 
                         </Border>
  
@@ -98,11 +98,11 @@
                             </Trigger>
 
                             <DataTrigger Binding="{Binding State}" Value="Circle">
-                                <Setter TargetName="Image" Property="Source" Value="Resourses/circle.png"/>
+                                <Setter TargetName="img" Property="Source" Value="Resources/circle.png"/>
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding State}" Value="Cross">
-                                <Setter TargetName="Image" Property="Source" Value="Resourses/cross.png"/>
+                                <Setter TargetName="img" Property="Source" Value="Resources/cross.png"/>
                             </DataTrigger>
 
                         </DataTemplate.Triggers>
