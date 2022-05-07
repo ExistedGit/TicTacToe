@@ -234,7 +234,7 @@ namespace Client
         {
             Cell cell = (Cell)obj;
 
-            if(cell.State != CellState.Empty)
+            if(cell.State == CellState.Empty)
             {
                 cell.State = MyIcon;
 
