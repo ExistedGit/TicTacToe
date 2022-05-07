@@ -80,7 +80,7 @@ namespace Server
                     {
                         GameRoom room = rooms.First(r => !r.Full);
                         room.Player2 = player;
-                        server.MessageReceived += room.MessageReceived;
+                        server.MessageReceived += (c, m) => room.MessageReceived(c, m);
                         room.StartGame();
                     }
 
