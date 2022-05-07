@@ -11,7 +11,7 @@ namespace Client
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private string currentEnemy;
-        private bool Is
+        private bool isMyTurn;
 
         public TcpClientWrap Client { get; set; }
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
@@ -20,7 +20,15 @@ namespace Client
             get => Client.Tcp.Connected;
         }
         public bool isGamaRunning { get; set; }
-        public bool IsMyTurn { get; set; }
+        public bool IsMyTurn
+        {
+            get => isMyTurn;
+            set
+            {
+                isMyTurn = value;
+                OnPropertyChanged();
+            }
+        }
         public Command CellClick { get; set; }
         public string CurrentEnemy
         {
