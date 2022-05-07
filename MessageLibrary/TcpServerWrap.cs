@@ -50,7 +50,7 @@ namespace MessageLibrary
             user.Disconnected += ClientDisconnected;
             user.MessageReceived += (c, msg) =>
             {
-                c.Disconnect();
+                //c.Disconnect();
             };
             user.MessageReceived += MessageReceived;
             do
