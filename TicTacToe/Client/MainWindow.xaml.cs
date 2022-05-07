@@ -1,11 +1,11 @@
-﻿using MessageLibrary;
-using System.Net;
-using System.Windows;
-using GameLibrary;
+﻿using GameLibrary;
+using MessageLibrary;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace Client
 {
@@ -169,6 +169,7 @@ namespace Client
                     IsMyTurn = info.IsYourTurn;
                     RoomId = info.RoomId;
                     MyIcon = info.Cell;
+                    Client.ReceiveAsync();
                     break;
                 }
                 case "GameInfoMessage":
