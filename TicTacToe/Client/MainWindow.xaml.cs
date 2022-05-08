@@ -15,6 +15,8 @@ namespace Client
         private bool isMyTurn;
         private CellState myIcon;
         private bool isFindingEnemy;
+        private bool isGameRunning;
+
 
         public TcpClientWrap Client { get; set; }
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
@@ -22,7 +24,15 @@ namespace Client
         {
             get => Client.Tcp.Connected;
         }
-        public bool isGameRunning { get; set; }
+        public bool IsGameRunning
+        {
+            get => isGameRunning;
+            set
+            {
+                isGameRunning = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsMyTurn
         {
             get => isMyTurn;
