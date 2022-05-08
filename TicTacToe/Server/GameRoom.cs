@@ -20,6 +20,10 @@ namespace Server
         private static uint IdCounter = 0;
         public GameRoom()
         {
+            RefillCells();
+        }
+        private void RefillCells()
+        {
             Cells = new Cell[3, 3];
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
@@ -27,21 +31,24 @@ namespace Server
         }
         const bool DEBUG = true;
         private Player WhoseTurn;
-        public void StartGame()
+        public void StartGame(bool addEvents = false)
         {
             bool turn = Convert.ToBoolean(rng.Next(0, 2));
             if (DEBUG) turn = DEBUG;
             WhoseTurn = turn ? Player1 : Player2;
-            Player1.Client.Disconnected += (client) =>
+            if (addEvents)
             {
-                Player1 = null;
-                PlayerLeft?.Invoke(this);
-            };
-            Player2.Client.Disconnected += (client) =>
-            {
-                Player2 = null;
-                PlayerLeft?.Invoke(this);
-            };
+                Player1.Client.Disconnected += (client) =>
+                {
+                    Player1 = null;
+                    PlayerLeft?.Invoke(this);
+                };
+                Player2.Client.Disconnected += (client) =>
+                {
+                    Player2 = null;
+                    PlayerLeft?.Invoke(this);
+                };
+            }
             Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, Id, turn, CellState.Cross));
             Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, Id, !turn, CellState.Circle));
         }
@@ -103,8 +110,10 @@ namespace Server
                     }
                     else if (Cells.Cast<Cell>().All(c => c.State != CellState.Empty))
                     {
-                        Player1.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Draw));
-                        Player1.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Draw));
+                        WhoseTurn.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Draw));
+                        WhoseTurn = WhoseTurn == Player1 ? Player2 : Player1;
+                        Player2.Client.SendAsync(new GameInfoMessage(cell, Id, GameResult.Draw));
+                        WhoseTurn = null;
                     }
                     else
                     {
@@ -118,7 +127,7 @@ namespace Server
                 RestartGameMessage restart = msg as RestartGameMessage;
                 Player player = Player1.Client.Tcp.Client.RemoteEndPoint.ToString().Equals(client.Tcp.Client.RemoteEndPoint.ToString()) ? Player1 : Player2;
 
-                Cells = new Cell[3, 3];
+                RefillCells();
                 if (Player1Restart && Player2Restart)
                     Player1Restart = Player2Restart = false;
                 if (restart.NewGame)
@@ -144,7 +153,7 @@ namespace Server
                     }
                     else if (Player1Restart && Player2Restart)
                     {
-                        StartGame();
+                        StartGame(false);
                     }
                 }
                 else
