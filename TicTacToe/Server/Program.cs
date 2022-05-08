@@ -79,15 +79,11 @@ namespace Server
                 {
                     GameRoom room = rooms.First(r => !r.Full);
                     room.Player2 = player;
+                    server.MessageReceived += room.MessageReceived;
                     room.StartGame();
                 }
             }
-            else if (msg is GameInfoMessage)
-            {
-                GameInfoMessage gameInfo = msg as GameInfoMessage;
-                GameRoom room = rooms.First(r => r.Id == gameInfo.Id);
-                room.MessageReceived(client, msg);
-            }
+
         }
 
         private static void Server_Started(TcpServerWrap server)

@@ -28,10 +28,13 @@ namespace Server
             bool turn = Convert.ToBoolean(rng.Next(0, 2));
             if (DEBUG) turn = DEBUG;
             WhoseTurn = turn ? Player1 : Player2;
-            
+            Player1.Client.Disconnected += (client) => Player1 = null;
+            Player2.Client.Disconnected += (client) => Player2 = null;
             Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, Id, turn, CellState.Cross));
             Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, Id, !turn, CellState.Circle));
+            
         }
+
         private bool HorizontalCheck(Cell cell)
         {
             for(int i =0;i < 3; i++)
@@ -87,11 +90,12 @@ namespace Server
                     }
                     else
                     {
-                        //WhoseTurn.Client.SendAsync(new GameInfoMessage())
+                        WhoseTurn.Client.SendAsync(new GameInfoMessage(null, Id, true, true));
+                        WhoseTurn = WhoseTurn == Player1 ? Player2 : Player1;
+                        WhoseTurn.Client.SendAsync(new GameInfoMessage(null, Id, true, false));
                         WhoseTurn = null;
-
                     }
-                }
+                } 
             }
         }
 
