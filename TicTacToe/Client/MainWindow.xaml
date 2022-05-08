@@ -101,18 +101,19 @@
             </Grid.ColumnDefinitions>
 
 
-            <Grid Grid.Row="0" Grid.Column="0">
-                <TextBlock Grid.Column="0"
-                           Text="User name"
+            <UniformGrid Grid.Row="0" Grid.Column="0" Columns="2">
+                
+              
+                <TextBlock Text="User name"
                            VerticalAlignment="Bottom"
                            Margin="5, 0, 0,0"
                            Foreground="#768c9e"/>
 
-                <TextBlock Grid.Column="1"
-                           VerticalAlignment="Bottom"
-                           Margin="5, 0, 0,0"
+                <TextBlock VerticalAlignment="Bottom"
+                           Margin="0, 0, 5,0"
                            Foreground="Green"
                            HorizontalAlignment="Right">
+                    
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
@@ -133,7 +134,7 @@
                     </TextBlock.Style>
                 </TextBlock>
                 
-            </Grid>
+            </UniformGrid>
         
 
             <TextBox Grid.Row="1"
@@ -147,11 +148,8 @@
 
 
 
-            <Grid Grid.Row="0" Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+            <UniformGrid Grid.Row="0" Grid.Column="1" Columns="2">
+           
 
                 <TextBlock Grid.Column="0"
                            Text="Enemy name"
@@ -161,7 +159,7 @@
 
                 <TextBlock Grid.Column="1"
                            VerticalAlignment="Bottom"
-                           Margin="5, 0, 0,0"
+                           Margin="0, 0, 5,0"
                            Foreground="DarkRed"
                            HorizontalAlignment="Right">
                     <TextBlock.Style>
@@ -185,8 +183,8 @@
                 </TextBlock>
 
 
-            </Grid>
-          
+            </UniformGrid>
+
 
 
 
@@ -200,7 +198,18 @@
                      FontSize="20"
                      x:Name="TB_EnemyUserName"
                      Background="#202b36"
-                     Foreground="White"/>
+                     Foreground="White">
+                
+                     <TextBox.Style>
+                         <Style TargetType="TextBox">
+                             <Style.Triggers>
+                                 <DataTrigger Binding="{Binding IsFindingEnemy}" Value="True">
+                                     <Setter Property="Text" Value="Searching..."/>
+                                 </DataTrigger>
+                             </Style.Triggers>
+                         </Style>
+                     </TextBox.Style>
+                </TextBox>
 
         </Grid>
 
@@ -214,7 +223,7 @@
                                 x:Name="Border"
                                 Background="#0e1621">
                             <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></MouseBinding>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
                             </Border.InputBindings>
                             <Image x:Name="img"  HorizontalAlignment="Center" VerticalAlignment="Center"
                                    />
