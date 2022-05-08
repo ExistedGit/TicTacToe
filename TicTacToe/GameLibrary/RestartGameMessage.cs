@@ -9,12 +9,13 @@ namespace GameLibrary
         public bool NewEnemy;
         public bool NewGame;
 
-        public RestartGameMessage(bool NewGame, bool NewEnemy)
+        public RestartGameMessage(bool NewGame, bool NewEnemy = false)
         {
             this.NewEnemy = NewEnemy;
             this.NewGame = NewGame;
             Type = MessageType.Custom;
         }
+
 
     }
 }
