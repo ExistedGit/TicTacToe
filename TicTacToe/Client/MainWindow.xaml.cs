@@ -195,7 +195,7 @@ namespace Client
                         switch (info.IsWinner)
                         {
                             case true:
-                                MessageBox.Show("You win");
+                                MessageBox.Show("You won");
                                 break;
                             case false:
                                 MessageBox.Show("You lose");
