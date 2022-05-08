@@ -135,6 +135,8 @@ namespace Client
                 BTN_ConnectToServer.IsEnabled = false;
                 TB_UserName.IsEnabled = false;
 
+                IsFindingEnemy = true;
+
                 Client.ConnectAsync();
             }
             else
@@ -152,12 +154,15 @@ namespace Client
         private void OnConnectedFailed(TcpClientWrap client)
         {
             Client = null;
+            IsFindingEnemy = false;
+
 
             Dispatcher.Invoke(() =>
             {
                 TB_ServerAddres.IsEnabled = true;
                 BTN_ConnectToServer.IsEnabled = true;
                 TB_UserName.IsEnabled = true;
+                
             });
           
         }
@@ -238,10 +243,10 @@ namespace Client
                                 NewEnemy = true;
                         
 
-                            ClearField();
-
                             IsFindingEnemy = true;
 
+                            ClearField();
+                            
                             RestartGameMessage RestartMessage = new RestartGameMessage(true, NewEnemy); 
                             client.SendAsync(RestartMessage);
                             client.ReceiveAsync();
