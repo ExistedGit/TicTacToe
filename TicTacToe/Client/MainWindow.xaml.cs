@@ -213,8 +213,13 @@ namespace Client
                             } 
                             case GameResult.Draw:
                             {
-                                Cell cell = Field.First(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y);
-                                cell.State = info.UpdatedCell.State;
+                                if(info.UpdatedCell != null)
+                                {
+                                    Cell cell = Field.First(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y);
+                                    cell.State = info.UpdatedCell.State;
+                                }
+
+                              
                                 MessageBox.Show("Draw", "", MessageBoxButton.OK, MessageBoxImage.Information);
                                 break;
                             }
