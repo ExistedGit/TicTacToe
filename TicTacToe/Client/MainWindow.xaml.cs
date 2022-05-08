@@ -20,10 +20,6 @@ namespace Client
 
         public TcpClientWrap Client { get; set; }
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
-        public bool isConnected
-        {
-            get => Client.Tcp.Connected;
-        }
         public bool IsGameRunning
         {
             get => isGameRunning;
@@ -198,16 +194,35 @@ namespace Client
 
                     if (info.IsGameOver)
                     {
-                        switch (info.IsWinner)
-                        {
-                            case true:
-                                MessageBox.Show("You win");
-                                break;
-                            case false:
-                                MessageBox.Show("You lose");
-                                break;
-                        }
 
+                        
+
+                        if (info.IsWinner)
+                            MessageBox.Show("You won", "Win", MessageBoxButton.OK, MessageBoxImage.Information);
+                        else
+                            MessageBox.Show("You lost", "Lose", MessageBoxButton.OK, MessageBoxImage.Information);
+
+
+                        IsGameRunning = false;
+
+                        if (MessageBox.Show("Want to play more?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+
+                            bool NewEnemy = false;
+                            if(MessageBox.Show("Find new enemy?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                                NewEnemy = true;
+                        
+                            RestartGameMessage RestartMessage = new RestartGameMessage(true, NewEnemy); 
+                            client.SendAsync(RestartMessage);
+                            client.ReceiveAsync();
+
+                        }
+                        else
+                        {     
+                            RestartGameMessage RestartMessage = new RestartGameMessage(false);
+                            client.SendAsync(RestartMessage);
+                            
+                        }
                     }
                     else
                     {
