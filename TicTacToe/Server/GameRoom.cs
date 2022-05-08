@@ -65,7 +65,7 @@ namespace Server
 
             // Находится ли клетка на диагонали
             int x = cell.X - 1, y = cell.Y - 1;
-            if (x != 1 && y != 1)
+            if (x == 1 ^ y == 1)
                 return false;
             bool counter = true;
             // Правая диагональ 0/2 1/1 2/0
@@ -102,13 +102,13 @@ namespace Server
                     }
                     else if (Cells.Cast<Cell>().All(c => c.State != CellState.Empty))
                     {
-                        Player1.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Tie));
-                        Player1.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Tie));
+                        Player1.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Draw));
+                        Player1.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Draw));
                     }
                     else
                     {
                         WhoseTurn = WhoseTurn == Player1 ? Player2 : Player1;
-                        WhoseTurn.Client.SendAsync(gameInfo);
+                        WhoseTurn.Client.SendAsync(new GameInfoMessage(cell, Id, GameResult.None));
                     }
                 } 
             }
