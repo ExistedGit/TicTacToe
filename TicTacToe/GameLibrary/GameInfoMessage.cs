@@ -10,6 +10,7 @@ namespace GameLibrary
         public bool IsWinner { get; set; }
         public uint Id { get; set; }
 
+
         public GameInfoMessage(Cell UpdatedCell, uint roomId)
         {
             this.UpdatedCell = UpdatedCell;

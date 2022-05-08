@@ -21,7 +21,7 @@ namespace Client
         {
             get => Client.Tcp.Connected;
         }
-        public bool isGamaRunning { get; set; }
+        public bool isGameRunning { get; set; }
         public bool IsMyTurn
         {
             get => isMyTurn;
@@ -113,7 +113,7 @@ namespace Client
                 Client.Disconnected += OnClientDisconnected;
                 Client.ConnectFailed += OnConnectedFailed;
                 Client.MessageSent += OnMessageSent;
-                Client.MessageReceived += OnMessageRecived;
+                Client.MessageReceived += OnMessageReceived;
                 TB_ServerAddres.IsEnabled = false;
                 BTN_ConnectToServer.IsEnabled = false;
                 TB_UserName.IsEnabled = false;
@@ -129,8 +129,6 @@ namespace Client
         {
             UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
             client.SendAsync(message);
-            Client.ReceiveAsync();
-
         }
 
         private void OnConnectedFailed(TcpClientWrap client)
@@ -155,17 +153,15 @@ namespace Client
 
         }
 
-        private void OnMessageRecived(TcpClientWrap client, Message message)
+        private void OnMessageReceived(TcpClientWrap client, Message message)
         {
-
             switch (message.GetType().Name)
             {
                 case "StartGameMessage":
                 {
                     StartGameMessage info = (StartGameMessage)message;
                     CurrentEnemy = info.EnemyUserName;
-
-                    isGamaRunning = true;
+                    isGameRunning = true;
                     IsMyTurn = info.IsYourTurn;
                     RoomId = info.RoomId;
                     MyIcon = info.Cell;
@@ -177,24 +173,12 @@ namespace Client
                     GameInfoMessage info = (GameInfoMessage)message;
 
                     if (info.IsGameOver)
-                    {
-                        switch (info.IsWinner)
-                        {
-                            case true:
-                                MessageBox.Show("You winn");
-                                break;
-                            case false:
-                                MessageBox.Show("You lose");
-                                break;
-                        }
-
-                    }
+                        MessageBox.Show(info.IsWinner ? "You win" : "You lose");
                     else
                     {
-                        Cell cell = Field.Where(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y).First();
-                        cell.State = info.UpdatedCell.State;
-
                         IsMyTurn = true;
+                        Cell cell = Field.First(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y);
+                        cell.State = info.UpdatedCell.State;
                     }
 
                     break;
@@ -214,14 +198,12 @@ namespace Client
             {
                 case "GameInfoMessage":
                     IsMyTurn = false;
+                    Client.ReceiveAsync();
                     break;
                 case "UserConnectMessage":
                     Client.ReceiveAsync();
                     break;
             }
-
-       
-            
         }
 
         #endregion Events
@@ -232,7 +214,7 @@ namespace Client
 
         private bool CellClick_CanExecute(object obj)
         {
-            return isGamaRunning && isMyTurn;
+            return isGameRunning && isMyTurn;
         }
 
         private void CellClick_Execute(object obj)
@@ -244,12 +226,9 @@ namespace Client
                 cell.State = MyIcon;
 
                 IsMyTurn = false;
-                GameInfoMessage message = new GameInfoMessage(cell, RoomId);
+                GameInfoMessage message = new GameInfoMessage(cell, RoomId, false, false);
                 Client.SendAsync(message);
-                Client.ReceiveAsync();
             }
-
-        
         }
 
         #endregion

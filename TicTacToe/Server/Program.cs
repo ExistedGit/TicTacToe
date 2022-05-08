@@ -63,28 +63,30 @@ namespace Server
 
         private static void Server_MessageReceived(TcpClientWrap client, Message msg)
         {
-            if (msg.Type == MessageType.Custom)
+            GameInfoMessage m = msg as GameInfoMessage;
+            if (msg is UserConnectMessage)
             {
-                if (msg is UserConnectMessage)
+                UserConnectMessage userConnect = msg as UserConnectMessage;
+                Console.WriteLine("User " + userConnect.UserName + " joined // " + (client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
+                Player player = new Player(userConnect.UserName, client);
+                if (rooms.All(r => r.Full))
                 {
-                    UserConnectMessage userConnect = msg as UserConnectMessage;
-                    Console.WriteLine("User " + userConnect.UserName + " joined // " + (client.Tcp.Client.RemoteEndPoint as IPEndPoint).ToString());
-                    Player player = new Player(userConnect.UserName, client);
-                    if (rooms.All(r => r.Full))
-                    {
-                        GameRoom newRoom = new GameRoom();
-                        newRoom.Player1 = player;
-                        rooms.Add(newRoom);
-                    }
-                    else
-                    {
-                        GameRoom room = rooms.First(r => !r.Full);
-                        room.Player2 = player;
-                        server.MessageReceived += (c, m) => room.MessageReceived(c, m);
-                        room.StartGame();
-                    }
-
+                    GameRoom newRoom = new GameRoom();
+                    newRoom.Player1 = player;
+                    rooms.Add(newRoom);
                 }
+                else
+                {
+                    GameRoom room = rooms.First(r => !r.Full);
+                    room.Player2 = player;
+                    room.StartGame();
+                }
+            }
+            else if (msg is GameInfoMessage)
+            {
+                GameInfoMessage gameInfo = msg as GameInfoMessage;
+                GameRoom room = rooms.First(r => r.Id == gameInfo.Id);
+                room.MessageReceived(client, msg);
             }
         }
 

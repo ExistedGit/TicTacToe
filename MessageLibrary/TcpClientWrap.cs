@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-
 namespace MessageLibrary
 {
     public class TcpClientWrap
@@ -17,7 +16,7 @@ namespace MessageLibrary
         public event Action<TcpClientWrap> Connected;
         public event Action<TcpClientWrap> Disconnected;
 
-        public event Action<TcpClientWrap, Message> MessageReceived;
+        public event MessageHandler MessageReceived;
         public event Action<Message> MessageSent;
 
         public TcpClientWrap(IPAddress ip, int port)
@@ -27,6 +26,11 @@ namespace MessageLibrary
 
             endPoint = new IPEndPoint(ip, port);
             client = null;
+        }
+
+        public void SendAsync(object gameInfoMessage)
+        {
+            throw new NotImplementedException();
         }
 
         public TcpClientWrap(TcpClient tcpClient)
@@ -117,14 +121,14 @@ namespace MessageLibrary
             if (client != null & client.Connected)
             {
                 message.SendToAsync(Tcp.Client, SendCB);
-                
                 return true;
             }
             return false;
         }
         private void SendCB(IAsyncResult ar) {
-            Socket socket = ar.AsyncState as Socket;
-            socket.EndSend(ar);
+            StateObject state = (StateObject)ar.AsyncState;
+            state.Socket.EndSend(ar);
+            MessageSent?.Invoke(Message.FromByteArray(state.Buffer));
         }
 
         public Message Receive()
@@ -148,31 +152,25 @@ namespace MessageLibrary
         }
         private void ReceiveCB(IAsyncResult ar)
         {
-            ValueTuple<Socket, byte[]> tuple = (ValueTuple<Socket, byte[]>)ar.AsyncState;
-            var(socket, array) = tuple;
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket socket = state.Socket;
             try
             {
-                socket.EndReceive(ar);
+                int bytesRead = Tcp.Client.EndReceive(ar);
+                if (bytesRead > 0)
+                {
+                    Message msg = Message.FromByteArray(state.Buffer);
+                    MessageReceived?.Invoke(this, msg);
+                    socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, SocketFlags.None, ReceiveCB, state);
+                }
             }
             catch (SocketException)
             {
                 Console.WriteLine("TcpClientWrap.Receive: SOCKET EXCEPTION");
                 return;
             }
-            MemoryStream ms = new MemoryStream(array);
-            while (true)
-            {
-                try
-                {
-                    MessageReceived?.Invoke(this, Message.FromByteArray(array, ms));
-                }
-                catch (Exception)
-                {
-                    break;
-                }
-            }
-            byte[] buffer = new byte[8192];
-            socket.BeginReceive(buffer, 0, 8192, SocketFlags.None, ReceiveCB, new ValueTuple<Socket, byte[]>(socket, buffer));
+            
+            //array = new byte[8192];
         }
     }
 }

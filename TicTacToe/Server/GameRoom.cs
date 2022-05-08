@@ -18,17 +18,21 @@ namespace Server
         public bool Full { get => Player1 != null && Player2 != null; }
         public uint Id { get; private set; } = IdCounter++;
         private static uint IdCounter = 0;
-        public Action<TcpClientWrap, Message> MsgReceivedAction { get; set; }
         public GameRoom()
         {
             Cells = new Cell[3, 3];
             for(int i =0; i< 3; i++)
                 for(int j =0; j < 3; j++)
-                    Cells[i, j] = new Cell(i, j);
+                    Cells[i, j] = new Cell(i + 1, j + 1);
         }
+        const bool DEBUG = true;
+        private Player WhoseTurn;
         public void StartGame()
         {
             bool turn = Convert.ToBoolean(rng.Next(0, 2));
+            if (DEBUG) turn = DEBUG;
+            WhoseTurn = turn ? Player1 : Player2;
+            
             Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, Id, turn, CellState.Cross));
             Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, Id, !turn, CellState.Circle));
         }
@@ -40,13 +44,11 @@ namespace Server
                 if(gameInfo.Id == Id)
                 {
                     
-                    Player secondPlayer = 
-                        (Player1.Client.Tcp.Client.RemoteEndPoint as  IPEndPoint).Address.ToString()
-                        == 
-                        (client.Tcp.Client.RemoteEndPoint as IPEndPoint).Address.ToString() ? Player2 : Player1;
                     Cell cell = gameInfo.UpdatedCell;
-                    Cells[cell.X, cell.Y] = cell;
-                    secondPlayer.Client.SendAsync(gameInfo);
+                    Console.WriteLine(WhoseTurn.UserName+ ": " + gameInfo.UpdatedCell.X + " " + gameInfo.UpdatedCell.Y);
+                    //Cells[cell.X - 1, cell.Y - 1] = cell;
+                    WhoseTurn = WhoseTurn == Player1 ? Player2 : Player1;
+                    WhoseTurn.Client.SendAsync(gameInfo);
                 }
             }
         }
