@@ -117,6 +117,10 @@ namespace Server
             {
                 RestartGameMessage restart = msg as RestartGameMessage;
                 Player player = Player1.Client.Tcp.Client.RemoteEndPoint.ToString().Equals(client.Tcp.Client.RemoteEndPoint.ToString()) ? Player1 : Player2;
+
+                Cells = new Cell[3, 3];
+                if (Player1Restart && Player2Restart)
+                    Player1Restart = Player2Restart = false;
                 if (restart.NewGame)
                 {
                     if (player == Player1)
@@ -152,7 +156,6 @@ namespace Server
                     else
                         Player2 = null;
                 }
-                Cells = new Cell[3, 3];
             }
         }
 
