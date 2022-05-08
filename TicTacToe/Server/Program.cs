@@ -84,6 +84,8 @@ namespace Server
                     room.FindNewRoom += Room_FindNewRoom;
                     room.PlayerLeft -= Room_PlayerLeft;
                     room.PlayerLeft += Room_PlayerLeft;
+                    room.TryFindEnemy -= Room_TryFindEnemy;
+                    room.TryFindEnemy += Room_TryFindEnemy;
                     room.StartGame();
                 }
             }
@@ -107,7 +109,20 @@ namespace Server
                 room.FindNewRoom += Room_FindNewRoom;
                 room.PlayerLeft -= Room_PlayerLeft;
                 room.PlayerLeft += Room_PlayerLeft;
+                room.TryFindEnemy -= Room_TryFindEnemy;
+                room.TryFindEnemy += Room_TryFindEnemy;
                 room.StartGame();
+            }
+        }
+
+        private static void Room_TryFindEnemy(GameRoom sender)
+        {
+
+            GameRoom room = rooms.First(r=>r.Id != sender.Id&& r.Player1 != null && r.Player2 == null);
+            if(room != null)
+            {
+                sender.Player2 = room.Player2;
+                rooms.Remove(room);
             }
         }
 

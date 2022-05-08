@@ -90,6 +90,7 @@ namespace Server
         private bool CheckWin(Cell cell) => HorizontalCheck(cell) || VerticalCheck(cell) || DiagonalCheck(cell);
 
         public event PlayerEventHandler FindNewRoom;
+        public event RoomEventHandler TryFindEnemy;
         private bool Player1Restart, Player2Restart;
         public void MessageReceived(TcpClientWrap client, Message msg)
         {
@@ -144,11 +145,13 @@ namespace Server
                         {
                             Player1 = null;
                             PlayerLeft?.Invoke(this);
+                            TryFindEnemy?.Invoke(this);
                         }
                         else
                         {
                             Player2 = null;
                             PlayerLeft?.Invoke(this);
+                            TryFindEnemy?.Invoke(this);
                         }
                     }
                     else if (Player1Restart && Player2Restart)
