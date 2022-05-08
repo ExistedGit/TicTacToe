@@ -290,6 +290,7 @@ namespace Client
                 IsMyTurn = false;
                 GameInfoMessage message = new GameInfoMessage(cell, RoomId);
                 Client.SendAsync(message);
+                
             }
         }
 
