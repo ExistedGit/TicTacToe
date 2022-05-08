@@ -21,7 +21,7 @@ namespace Client
         {
             get => Client.Tcp.Connected;
         }
-        public bool isGamaRunning { get; set; }
+        public bool isGamaRunning { get; set; } = false;
         public bool IsMyTurn
         {
             get => isMyTurn;

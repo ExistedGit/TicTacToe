@@ -78,9 +78,18 @@
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMyTurn}" Value="True">
-                                    <Setter Property="Text" Value="Your turn"></Setter>
-                                </DataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMyTurn}" Value="True"/>
+                                        <Condition Binding="{Binding isGamaRunning}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Your turn"></Setter>
+                                    </MultiDataTrigger.Setters>
+
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
@@ -120,9 +129,18 @@
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMyTurn}" Value="False">
-                                    <Setter Property="Text" Value="Enemy turn"></Setter>
-                                </DataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMyTurn}" Value="False"/>
+                                        <Condition Binding="{Binding isGamaRunning}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Enemy turn"></Setter>
+                                    </MultiDataTrigger.Setters>
+
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
