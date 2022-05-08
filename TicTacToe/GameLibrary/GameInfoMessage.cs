@@ -20,8 +20,8 @@ namespace GameLibrary
         {
             this.UpdatedCell = UpdatedCell;
             this.Result = Result;
-            Id = roomId;
             Type = MessageType.Custom;            
+            Id = roomId;
         }
 
     }
