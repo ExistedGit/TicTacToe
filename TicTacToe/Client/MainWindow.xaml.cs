@@ -14,6 +14,7 @@ namespace Client
         private string currentEnemy;
         private bool isMyTurn;
         private CellState myIcon;
+        private bool isFindingEnemy;
 
         public TcpClientWrap Client { get; set; }
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
@@ -42,6 +43,15 @@ namespace Client
             }
         }
         public uint RoomId { get; set; }
+        public bool IsFindingEnemy
+        {
+            get => isFindingEnemy;
+            set
+            {
+                isFindingEnemy = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -50,10 +60,10 @@ namespace Client
             get => myIcon;
             set
             {
-                if(value != CellState.Empty)
-                {
+                if (value != CellState.Empty)
                     myIcon = value;
-                }
+                else
+                    throw new InvalidEnumArgumentException("Icon don't can be empty");
             }
         }
 
@@ -71,6 +81,7 @@ namespace Client
                 }
             }
 
+            IsFindingEnemy = false;
             DataContext = this;
         }
 
@@ -128,6 +139,7 @@ namespace Client
         private void OnClientConnected(TcpClientWrap client)
         {
             UserConnectMessage message = new UserConnectMessage(Dispatcher.Invoke(() => TB_UserName.Text));
+            IsFindingEnemy = true;
             client.SendAsync(message);
         }
 
@@ -146,6 +158,7 @@ namespace Client
 
         private void OnClientDisconnected(TcpClientWrap client)
         {
+            IsFindingEnemy = false;
             Client = null;
             TB_ServerAddres.IsEnabled = true;
             BTN_ConnectToServer.IsEnabled = true;
@@ -162,6 +175,7 @@ namespace Client
                     StartGameMessage info = (StartGameMessage)message;
                     CurrentEnemy = info.EnemyUserName;
                     isGameRunning = true;
+                    isFindingEnemy = false;
                     IsMyTurn = info.IsYourTurn;
                     RoomId = info.RoomId;
                     MyIcon = info.Cell;

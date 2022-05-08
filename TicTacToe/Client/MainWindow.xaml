@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="450">
+        Title="MainWindow"
+        Height="500" Width="300" MinWidth="500" MinHeight="550"
+        ResizeMode="CanResizeWithGrip" >
     <Grid Background="#242f3d">
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -43,9 +45,45 @@
                         Margin="5"
                         Content="Connect"
                         x:Name="BTN_ConnectToServer"
-                        Click="BTN_ConnectToServer_Click"
-                        Background="#1f2936"
-                        Foreground="#999999"/>
+                        Click="BTN_ConnectToServer_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Setters>
+
+                                <Setter Property="Foreground" Value="#999999"/>
+                           
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#1f2936"
+                                                    x:Name="Border"
+                                                    BorderBrush="#999999"
+                                                    BorderThickness="1">
+
+
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="#999999"/>
+                                                    <Setter Property="Foreground" Value="#1f2936"/>
+
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
+                                                </Trigger>
+                                                
+                                            </ControlTemplate.Triggers>
+                                            
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+                            
+                          
+                        </Style>
+                    </Button.Style>
+                </Button>
 
             </Grid>
 
@@ -63,30 +101,40 @@
             </Grid.ColumnDefinitions>
 
 
-            <Grid Grid.Row="0" Grid.Column="0">
-                <TextBlock Grid.Column="0"
-                           Text="User name"
+            <UniformGrid Grid.Row="0" Grid.Column="0" Columns="2">
+                
+              
+                <TextBlock Text="User name"
                            VerticalAlignment="Bottom"
                            Margin="5, 0, 0,0"
                            Foreground="#768c9e"/>
 
-                <TextBlock Grid.Column="1"
-                           VerticalAlignment="Bottom"
-                           Margin="5, 0, 0,0"
+                <TextBlock VerticalAlignment="Bottom"
+                           Margin="0, 0, 5,0"
                            Foreground="Green"
                            HorizontalAlignment="Right">
+                    
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMyTurn}" Value="True">
-                                    <Setter Property="Text" Value="Your turn"></Setter>
-                                </DataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMyTurn}" Value="True"/>
+                                        <Condition Binding="{Binding isGamaRunning}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Your turn"></Setter>
+                                    </MultiDataTrigger.Setters>
+
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
                 
-            </Grid>
+            </UniformGrid>
         
 
             <TextBox Grid.Row="1"
@@ -100,11 +148,8 @@
 
 
 
-            <Grid Grid.Row="0" Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+            <UniformGrid Grid.Row="0" Grid.Column="1" Columns="2">
+           
 
                 <TextBlock Grid.Column="0"
                            Text="Enemy name"
@@ -114,23 +159,32 @@
 
                 <TextBlock Grid.Column="1"
                            VerticalAlignment="Bottom"
-                           Margin="5, 0, 0,0"
+                           Margin="0, 0, 5,0"
                            Foreground="DarkRed"
                            HorizontalAlignment="Right">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMyTurn}" Value="False">
-                                    <Setter Property="Text" Value="Enemy turn"></Setter>
-                                </DataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMyTurn}" Value="False"/>
+                                        <Condition Binding="{Binding isGamaRunning}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Enemy turn"></Setter>
+                                    </MultiDataTrigger.Setters>
+
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
 
 
-            </Grid>
-          
+            </UniformGrid>
+
 
 
 
@@ -144,7 +198,18 @@
                      FontSize="20"
                      x:Name="TB_EnemyUserName"
                      Background="#202b36"
-                     Foreground="White"/>
+                     Foreground="White">
+                
+                     <TextBox.Style>
+                         <Style TargetType="TextBox">
+                             <Style.Triggers>
+                                 <DataTrigger Binding="{Binding IsFindingEnemy}" Value="True">
+                                     <Setter Property="Text" Value="Searching..."/>
+                                 </DataTrigger>
+                             </Style.Triggers>
+                         </Style>
+                     </TextBox.Style>
+                </TextBox>
 
         </Grid>
 
@@ -158,7 +223,7 @@
                                 x:Name="Border"
                                 Background="#0e1621">
                             <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></MouseBinding>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding CellClick, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
                             </Border.InputBindings>
                             <Image x:Name="img"  HorizontalAlignment="Center" VerticalAlignment="Center"
                                    />
