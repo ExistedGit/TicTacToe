@@ -210,7 +210,7 @@
                                        <Setter Property="Text" Value="Searching..."/>
                                   </DataTrigger>
 
-                                  <DataTrigger Binding="{Binding IsFindingEnemy}" Value="True">
+                                  <DataTrigger Binding="{Binding IsFindingEnemy}" Value="False">
                                         <Setter Property="Text" Value="{Binding CurrentEnemy}"/>
                                   </DataTrigger>
 
