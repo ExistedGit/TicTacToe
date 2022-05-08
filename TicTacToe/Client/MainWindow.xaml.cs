@@ -15,6 +15,8 @@ namespace Client
         private bool isMyTurn;
         private CellState myIcon;
         private bool isFindingEnemy;
+        private bool isGameRunning;
+
 
         public TcpClientWrap Client { get; set; }
         public ObservableCollection<Cell> Field { get; set; } = new ObservableCollection<Cell>();
@@ -22,7 +24,15 @@ namespace Client
         {
             get => Client.Tcp.Connected;
         }
-        public bool isGameRunning { get; set; }
+        public bool IsGameRunning
+        {
+            get => isGameRunning;
+            set
+            {
+                isGameRunning = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsMyTurn
         {
             get => isMyTurn;
@@ -187,7 +197,18 @@ namespace Client
                     GameInfoMessage info = (GameInfoMessage)message;
 
                     if (info.IsGameOver)
-                        MessageBox.Show(info.IsWinner ? "You win" : "You lose");
+                    {
+                        switch (info.IsWinner)
+                        {
+                            case true:
+                                MessageBox.Show("You win");
+                                break;
+                            case false:
+                                MessageBox.Show("You lose");
+                                break;
+                        }
+
+                    }
                     else
                     {
                         IsMyTurn = true;

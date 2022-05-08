@@ -121,7 +121,7 @@
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding IsMyTurn}" Value="True"/>
-                                        <Condition Binding="{Binding isGamaRunning}" Value="True"/>
+                                        <Condition Binding="{Binding IsGameRunning}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
 
                                     <MultiDataTrigger.Setters>
@@ -169,7 +169,7 @@
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding IsMyTurn}" Value="False"/>
-                                        <Condition Binding="{Binding isGamaRunning}" Value="True"/>
+                                        <Condition Binding="{Binding IsGameRunning}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
 
                                     <MultiDataTrigger.Setters>
