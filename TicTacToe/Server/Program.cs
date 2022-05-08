@@ -80,10 +80,22 @@ namespace Server
                     GameRoom room = rooms.First(r => !r.Full);
                     room.Player2 = player;
                     server.MessageReceived += room.MessageReceived;
+                    room.PlayerLeft -= Room_PlayerLeft;
+                    room.PlayerLeft += Room_PlayerLeft;
                     room.StartGame();
                 }
             }
 
+        }
+
+        private static void Room_PlayerLeft(GameRoom room)
+        {
+            if (room.Player1 == null && room.Player2 == null)
+            {
+                rooms.Remove(room);
+            } else if(room.Player1 == null ^ room.Player2==null) {
+                server.MessageReceived -= room.MessageReceived;
+            }
         }
 
         private static void Server_Started(TcpServerWrap server)

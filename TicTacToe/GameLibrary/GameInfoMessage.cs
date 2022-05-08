@@ -6,8 +6,7 @@ namespace GameLibrary
     public class GameInfoMessage : Message
     {
         public Cell UpdatedCell { get; set; }
-        public bool IsGameOver { get; set; }
-        public bool IsWinner { get; set; }
+        public GameResult GameResult { get; set; } = GameResult.None;
         public uint Id { get; set; }
 
 
@@ -18,11 +17,10 @@ namespace GameLibrary
             Id = roomId;
         }
 
-        public GameInfoMessage(Cell UpdatedCell, uint roomId, bool isGameEnded, bool isWinner)
+        public GameInfoMessage(Cell UpdatedCell, uint roomId, GameResult result     )
         {
             this.UpdatedCell = UpdatedCell;
-            this.IsGameOver = isGameEnded;
-            this.IsWinner = isWinner;
+            this.GameResult = result;
             Id = roomId;
             Type = MessageType.Custom;
         }

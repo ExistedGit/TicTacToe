@@ -197,7 +197,7 @@ namespace Client
 
                         
 
-                        if (info.IsWinner)
+                        if (info.GameResult)
                             MessageBox.Show("You won", "Win", MessageBoxButton.OK, MessageBoxImage.Information);
                         else
                             MessageBox.Show("You lost", "Lose", MessageBoxButton.OK, MessageBoxImage.Information);
