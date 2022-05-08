@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Cell.cs" />
     <Compile Include="GameInfoMessage.cs" />
+    <Compile Include="GameResult.cs" />
     <Compile Include="RestartGameMessage.cs" />
     <Compile Include="StartGameMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

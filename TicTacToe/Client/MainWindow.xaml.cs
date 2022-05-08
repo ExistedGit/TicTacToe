@@ -212,6 +212,10 @@ namespace Client
                             if(MessageBox.Show("Find new enemy?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                                 NewEnemy = true;
                         
+
+                            ClearField();
+
+
                             RestartGameMessage RestartMessage = new RestartGameMessage(true, NewEnemy); 
                             client.SendAsync(RestartMessage);
                             client.ReceiveAsync();
