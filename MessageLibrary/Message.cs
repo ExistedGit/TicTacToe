@@ -6,12 +6,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace MessageLibrary
 {
     [Serializable]
-    public abstract partial class Message
+    public abstract class Message
     {
-        private static BinaryFormatter bf = new BinaryFormatter();
         public MessageType Type { get; protected set; } = MessageType.Undefined;
         public DateTime Time { get; protected set; }
 
+        private static BinaryFormatter bf = new BinaryFormatter();
         public byte[] ToByteArray()
         {
             MemoryStream ms = new MemoryStream();
@@ -19,29 +19,52 @@ namespace MessageLibrary
             ms.Position = 0;
             return ms.ToArray();
         }
-        public void SendToAsync(Socket socket, AsyncCallback cb) {
-            byte[] array = ToByteArray();
-            socket.BeginSend(array, 0, array.Length, SocketFlags.None, cb, socket);
+        public void SendToAsync(Socket socket, AsyncCallback cb)
+        {
+            StateObject stateObject = new StateObject();
+            stateObject.Buffer = ToByteArray();
+            stateObject.Socket = socket;
+            socket.BeginSend(stateObject.Buffer, 0, stateObject.Buffer.Length, SocketFlags.None, cb, stateObject);
         }
-        public void StreamTo(Stream stream) => bf.Serialize(stream, this);
+        public void StreamTo(Stream stream)
+        {
+
+            bf.Serialize(stream, this);
+        }
 
         public static void ReceiveFromSocket(Socket socket, AsyncCallback cb)
         {
-            byte[] buffer = new byte[8192];
-            socket.BeginReceive(buffer, 0, 8192, SocketFlags.None, cb, new ValueTuple<Socket, byte[]>(socket, buffer));
+            StateObject stateObject = new StateObject();
+            stateObject.Buffer = new byte[8192];
+            stateObject.Socket = socket;
+            socket.BeginReceive(stateObject.Buffer, 0, StateObject.BufferSize, SocketFlags.None, cb, stateObject);
         }
 
-        public static Message FromNetworkStream(NetworkStream stream) => bf.Deserialize(stream) as Message;
+        public static Message FromNetworkStream(NetworkStream stream)
+        {
 
-        public static T FromNetworkStream<T>(NetworkStream stream) where T: Message => bf.Deserialize(stream) as T;
-        public static Message FromByteArray(byte[] buffer, MemoryStream ms) => bf.Deserialize(ms) as Message;
+            return bf.Deserialize(stream) as Message;
+        }
+
+        public static T FromNetworkStream<T>(NetworkStream stream) where T : Message
+        {
+
+            return bf.Deserialize(stream) as T;
+        }
+
+        public static Message FromMemoryStream(MemoryStream ms)
+        {
+
+            return bf.Deserialize(ms) as Message;
+        }
+
         public static Message FromByteArray(byte[] buffer)
         {
-            
+
             MemoryStream ms = new MemoryStream(buffer);
             return bf.Deserialize(ms) as Message;
         }
-        public static T FromByteArray<T> (byte[] buffer) where T : Message
+        public static T FromByteArray<T>(byte[] buffer) where T : Message
         {
             MemoryStream ms = new MemoryStream(buffer);
             return bf.Deserialize(ms) as T;

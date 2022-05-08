@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,6 +50,7 @@
     <Compile Include="ArrayMessage.cs" />
     <Compile Include="ITypedMessage.cs" />
     <Compile Include="MessageType.cs" />
+    <Compile Include="StateObject.cs" />
     <Compile Include="TcpServerWrap.cs" />
     <Compile Include="TextMessage.cs" />
     <Compile Include="Message.cs" />

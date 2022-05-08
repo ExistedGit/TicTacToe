@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MessageLibrary
 {
+    public delegate void MessageHandler(TcpClientWrap client, Message msg);
     public class TcpServerWrap
     {
         public event Action<TcpServerWrap> Started;
@@ -23,9 +24,7 @@ namespace MessageLibrary
             listener = new TcpListener(new IPEndPoint(IPAddress.Any, port));
             listener.Start(10);
             Started?.Invoke(this);
-            ClientDisconnected += (client) => {
-                
-            };
+
             Task.Run(() => {
                 do
                 {
@@ -34,13 +33,13 @@ namespace MessageLibrary
                 } while (true);
             });
         }
-        public event Action<TcpClientWrap, Message> MessageReceived;
+        public event MessageHandler MessageReceived;
         private void Receive(TcpClient client)
         {
             TcpClientWrap user = new TcpClientWrap(client);
             ClientConnected?.Invoke(user);
             user.Disconnected += ClientDisconnected;
-            user.MessageReceived += MessageReceived;
+            user.MessageReceived += OnMessageReceived;
             do
             {
                 user.Receive();
@@ -52,12 +51,15 @@ namespace MessageLibrary
             TcpClientWrap user = new TcpClientWrap(client);
             ClientConnected?.Invoke(user);
             user.Disconnected += ClientDisconnected;
-            user.MessageReceived += MessageReceived;
+            user.MessageReceived += OnMessageReceived;
 
             user.ReceiveAsync();
         }
 
-        
+        private void OnMessageReceived(TcpClientWrap client, Message msg)
+        {
+            MessageReceived?.Invoke(client, msg);
+        }
 
         public void Shutdown()
         {
