@@ -5,6 +5,7 @@ namespace GameLibrary
     {
         Win,
         Lose,
-        Draw
+        Draw,
+        None
     }
 }
