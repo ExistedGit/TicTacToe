@@ -180,8 +180,8 @@ namespace Client
                 {
                     StartGameMessage info = (StartGameMessage)message;
                     CurrentEnemy = info.EnemyUserName;
-                    isGameRunning = true;
-                    isFindingEnemy = false;
+                    IsGameRunning = true;
+                    IsFindingEnemy = false;
                     IsMyTurn = info.IsYourTurn;
                     RoomId = info.RoomId;
                     MyIcon = info.Cell;
@@ -200,14 +200,26 @@ namespace Client
                         { 
 
                             case GameResult.Lose:
+                            {
+                                Cell cell = Field.First(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y);
+                                cell.State = info.UpdatedCell.State;
                                 MessageBox.Show("You lost", "", MessageBoxButton.OK, MessageBoxImage.Information);
                                 break;
+                            }
                             case GameResult.Win:
+                            {
                                 MessageBox.Show("You won", "", MessageBoxButton.OK, MessageBoxImage.Information);
                                 break;
+                            } 
                             case GameResult.Draw:
+                            {
+                                Cell cell = Field.First(c => c.X == info.UpdatedCell.X && c.Y == info.UpdatedCell.Y);
+                                cell.State = info.UpdatedCell.State;
                                 MessageBox.Show("Draw", "", MessageBoxButton.OK, MessageBoxImage.Information);
                                 break;
+                            }
+                              
+                                
                           
                         }
 
@@ -223,6 +235,7 @@ namespace Client
 
                             ClearField();
 
+                            IsFindingEnemy = true;
 
                             RestartGameMessage RestartMessage = new RestartGameMessage(true, NewEnemy); 
                             client.SendAsync(RestartMessage);
