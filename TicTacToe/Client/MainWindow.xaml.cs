@@ -192,16 +192,24 @@ namespace Client
                 {
                     GameInfoMessage info = (GameInfoMessage)message;
 
-                    if (info.IsGameOver)
+                    if (info.Result != GameResult.None)
                     {
-
                         
 
-                        if (info.GameResult)
-                            MessageBox.Show("You won", "Win", MessageBoxButton.OK, MessageBoxImage.Information);
-                        else
-                            MessageBox.Show("You lost", "Lose", MessageBoxButton.OK, MessageBoxImage.Information);
+                        switch (info.Result)
+                        { 
 
+                            case GameResult.Lose:
+                                MessageBox.Show("You lost", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                                break;
+                            case GameResult.Win:
+                                MessageBox.Show("You won", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                                break;
+                            case GameResult.Draw:
+                                MessageBox.Show("Draw", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                                break;
+                          
+                        }
 
                         IsGameRunning = false;
 
@@ -280,7 +288,7 @@ namespace Client
                 cell.State = MyIcon;
 
                 IsMyTurn = false;
-                GameInfoMessage message = new GameInfoMessage(cell, RoomId, false, false);
+                GameInfoMessage message = new GameInfoMessage(cell, RoomId);
                 Client.SendAsync(message);
             }
         }
@@ -289,9 +297,9 @@ namespace Client
 
         private void ClearField()
         {
-            foreach (var item in Field){
+            foreach (var item in Field)
                 item.State = CellState.Empty;
-            }
+            
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")

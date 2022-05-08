@@ -8,9 +8,9 @@ namespace GameLibrary
 {
     public enum GameResult
     {
-        None,
         Win,
         Lose,
-        Tie
+        Draw,
+        None
     }
 }
