@@ -7,7 +7,6 @@ namespace GameLibrary
     {
         public Cell UpdatedCell { get; set; }
         public GameResult Result { get; set; }
-        public bool IsWinner { get; set; }
         public uint Id { get; set; }
 
 
@@ -18,9 +17,8 @@ namespace GameLibrary
             Id = roomId;
         }
         public GameInfoMessage(Cell UpdatedCell, uint roomId, GameResult Result)
-        { 
+        {
             this.Result = Result;
-            this.IsWinner = isWinner;
             Id = roomId;
             Type = MessageType.Custom;            
         }
