@@ -187,7 +187,18 @@ namespace Client
                     GameInfoMessage info = (GameInfoMessage)message;
 
                     if (info.IsGameOver)
-                        MessageBox.Show(info.IsWinner ? "You win" : "You lose");
+                    {
+                        switch (info.IsWinner)
+                        {
+                            case true:
+                                MessageBox.Show("You win");
+                                break;
+                            case false:
+                                MessageBox.Show("You lose");
+                                break;
+                        }
+
+                    }
                     else
                     {
                         IsMyTurn = true;
