@@ -16,10 +16,8 @@ namespace GameLibrary
             Type = MessageType.Custom;
             Id = roomId;
         }
-
         public GameInfoMessage(Cell UpdatedCell, uint roomId, GameResult Result)
         {
-            this.UpdatedCell = UpdatedCell;
             this.Result = Result;
             Type = MessageType.Custom;            
             Id = roomId;

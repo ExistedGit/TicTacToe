@@ -79,14 +79,22 @@ namespace Server
                 {
                     GameRoom room = rooms.First(r => !r.Full);
                     room.Player2 = player;
+                    server.MessageReceived += room.MessageReceived;
+                    room.PlayerLeft -= Room_PlayerLeft;
+                    room.PlayerLeft += Room_PlayerLeft;
                     room.StartGame();
                 }
             }
-            else if (msg is GameInfoMessage)
+
+        }
+
+        private static void Room_PlayerLeft(GameRoom room)
+        {
+            if (room.Player1 == null && room.Player2 == null)
             {
-                GameInfoMessage gameInfo = msg as GameInfoMessage;
-                GameRoom room = rooms.First(r => r.Id == gameInfo.Id);
-                room.MessageReceived(client, msg);
+                rooms.Remove(room);
+            } else if(room.Player1 == null ^ room.Player2==null) {
+                server.MessageReceived -= room.MessageReceived;
             }
         }
 
