@@ -179,16 +179,7 @@
                                 </MultiDataTrigger>
 
 
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMyTurn}" Value="True"/>
-                                        <Condition Binding="{Binding IsGameRunning}" Value="True"/>
-                                    </MultiDataTrigger.Conditions>
-
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="Text" Value="{Binding CurrentEnemy}"/>
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
+                          
                                 
                             </Style.Triggers>
                         </Style>
@@ -215,10 +206,15 @@
                      <TextBox.Style>
                          <Style TargetType="TextBox">
                              <Style.Triggers>
-                                 <DataTrigger Binding="{Binding IsFindingEnemy}" Value="True">
-                                     <Setter Property="Text" Value="Searching..."/>
-                                 </DataTrigger>
-                             </Style.Triggers>
+                                  <DataTrigger Binding="{Binding IsFindingEnemy}" Value="True">
+                                       <Setter Property="Text" Value="Searching..."/>
+                                  </DataTrigger>
+
+                                  <DataTrigger Binding="{Binding IsFindingEnemy}" Value="True">
+                                        <Setter Property="Text" Value="{Binding CurrentEnemy}"/>
+                                  </DataTrigger>
+
+                        </Style.Triggers>
                          </Style>
                      </TextBox.Style>
                 </TextBox>
