@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="450">
+        Title="MainWindow"
+        Height="500" Width="300" MinWidth="500" MinHeight="550"
+        ResizeMode="CanResizeWithGrip" >
     <Grid Background="#242f3d">
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -43,9 +45,45 @@
                         Margin="5"
                         Content="Connect"
                         x:Name="BTN_ConnectToServer"
-                        Click="BTN_ConnectToServer_Click"
-                        Background="#1f2936"
-                        Foreground="#999999"/>
+                        Click="BTN_ConnectToServer_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Setters>
+
+                                <Setter Property="Foreground" Value="#999999"/>
+                           
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#1f2936"
+                                                    x:Name="Border"
+                                                    BorderBrush="#999999"
+                                                    BorderThickness="1">
+
+
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="#999999"/>
+                                                    <Setter Property="Foreground" Value="#1f2936"/>
+
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
+                                                </Trigger>
+                                                
+                                            </ControlTemplate.Triggers>
+                                            
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+                            
+                          
+                        </Style>
+                    </Button.Style>
+                </Button>
 
             </Grid>
 
