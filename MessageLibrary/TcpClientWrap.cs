@@ -161,11 +161,13 @@ namespace MessageLibrary
                 {
                     Message msg = Message.FromByteArray(state.Buffer);
                     MessageReceived?.Invoke(this, msg);
+                    
                     socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, SocketFlags.None, ReceiveCB, state);
                 }
             }
             catch (SocketException)
             {
+                Disconnected?.Invoke(this);
                 Console.WriteLine("TcpClientWrap.Receive: SOCKET EXCEPTION");
                 return;
             }

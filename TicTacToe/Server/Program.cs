@@ -80,12 +80,35 @@ namespace Server
                     GameRoom room = rooms.First(r => !r.Full);
                     room.Player2 = player;
                     server.MessageReceived += room.MessageReceived;
+                    room.FindNewRoom -= Room_FindNewRoom;
+                    room.FindNewRoom += Room_FindNewRoom;
                     room.PlayerLeft -= Room_PlayerLeft;
                     room.PlayerLeft += Room_PlayerLeft;
                     room.StartGame();
                 }
             }
 
+        }
+
+        private static void Room_FindNewRoom(GameRoom sender, Player player)
+        {
+            if (rooms.All(r => r.Full))
+            {
+                GameRoom newRoom = new GameRoom();
+                newRoom.Player1 = player;
+                rooms.Add(newRoom);
+            }
+            else
+            {
+                GameRoom room = rooms.First(r => r.Id != sender.Id && !r.Full);
+                room.Player2 = player;
+                server.MessageReceived += room.MessageReceived;
+                room.FindNewRoom -= Room_FindNewRoom;
+                room.FindNewRoom += Room_FindNewRoom;
+                room.PlayerLeft -= Room_PlayerLeft;
+                room.PlayerLeft += Room_PlayerLeft;
+                room.StartGame();
+            }
         }
 
         private static void Room_PlayerLeft(GameRoom room)

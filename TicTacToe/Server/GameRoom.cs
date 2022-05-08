@@ -6,6 +6,7 @@ using System.Linq;
 namespace Server
 {
     public delegate void RoomEventHandler(GameRoom room);
+    public delegate void PlayerEventHandler(GameRoom sender, Player player);
     public class GameRoom
     {
         public event RoomEventHandler PlayerLeft;
@@ -20,8 +21,8 @@ namespace Server
         public GameRoom()
         {
             Cells = new Cell[3, 3];
-            for(int i =0; i< 3; i++)
-                for(int j =0; j < 3; j++)
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
                     Cells[i, j] = new Cell(i + 1, j + 1);
         }
         const bool DEBUG = true;
@@ -44,13 +45,13 @@ namespace Server
             Player1.Client.SendAsync(new StartGameMessage(Player2.UserName, Id, turn, CellState.Cross));
             Player2.Client.SendAsync(new StartGameMessage(Player1.UserName, Id, !turn, CellState.Circle));
         }
-        
+
         private bool HorizontalCheck(Cell cell)
         {
-            for(int i =0;i < 3; i++)
+            for (int i = 0; i < 3; i++)
                 if (Cells[cell.Y - 1, i].State != cell.State)
                     return false;
-            
+
             return true;
         }
         private bool VerticalCheck(Cell cell)
@@ -72,32 +73,32 @@ namespace Server
             for (int i = 0, j = 2; i < 3; i++, j--)
                 if (Cells[j, i].State != cell.State)
                     counter = false;
-            if(counter) return counter;
+            if (counter) return counter;
             // Левая диагональ 2/2 1/1 0/0
             for (int i = 2, j = 2; i > 0; i--, j--)
                 if (Cells[j, i].State != cell.State)
                     return false;
             return true;
         }
-        private bool CheckWin(Cell cell)
-        {
-            return HorizontalCheck(cell) || VerticalCheck(cell) || DiagonalCheck(cell);
-        }
+        private bool CheckWin(Cell cell) => HorizontalCheck(cell) || VerticalCheck(cell) || DiagonalCheck(cell);
+
+        public event PlayerEventHandler FindNewRoom;
+        private bool Player1Restart, Player2Restart;
         public void MessageReceived(TcpClientWrap client, Message msg)
         {
-            if(msg is GameInfoMessage)
+            if (msg is GameInfoMessage)
             {
                 GameInfoMessage gameInfo = msg as GameInfoMessage;
-                if(gameInfo.Id == Id)
+                if (gameInfo.Id == Id)
                 {
                     Cell cell = gameInfo.UpdatedCell;
-                    Console.WriteLine(WhoseTurn.UserName+ ": " + gameInfo.UpdatedCell.X + " " + gameInfo.UpdatedCell.Y);
+                    Console.WriteLine(WhoseTurn.UserName + ": " + gameInfo.UpdatedCell.X + " " + gameInfo.UpdatedCell.Y);
                     Cells[cell.Y - 1, cell.X - 1] = cell;
                     if (CheckWin(cell))
                     {
                         WhoseTurn.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Win));
                         WhoseTurn = WhoseTurn == Player1 ? Player2 : Player1;
-                        WhoseTurn.Client.SendAsync(new GameInfoMessage(null, Id, GameResult.Lose));
+                        WhoseTurn.Client.SendAsync(new GameInfoMessage(cell, Id, GameResult.Lose));
                         WhoseTurn = null;
                     }
                     else if (Cells.Cast<Cell>().All(c => c.State != CellState.Empty))
@@ -110,7 +111,48 @@ namespace Server
                         WhoseTurn = WhoseTurn == Player1 ? Player2 : Player1;
                         WhoseTurn.Client.SendAsync(new GameInfoMessage(cell, Id, GameResult.None));
                     }
-                } 
+                }
+            }
+            else if (msg is RestartGameMessage)
+            {
+                RestartGameMessage restart = msg as RestartGameMessage;
+                Player player = Player1.Client.Tcp.Client.RemoteEndPoint.ToString().Equals(client.Tcp.Client.RemoteEndPoint.ToString()) ? Player1 : Player2;
+                if (restart.NewGame)
+                {
+                    if (player == Player1)
+                        Player1Restart = true;
+                    else
+                        Player2Restart = true;
+
+                    if (restart.NewEnemy)
+                    {
+                        FindNewRoom?.Invoke(this, player);
+                        if (player == Player1)
+                        {
+                            Player1 = null;
+                            PlayerLeft?.Invoke(this);
+                        }
+                        else
+                        {
+                            Player2 = null;
+                            PlayerLeft?.Invoke(this);
+                        }
+                    }
+                    else if (Player1Restart && Player2Restart)
+                    {
+                        StartGame();
+                    }
+                }
+                else
+                {
+                    player.Client.Disconnect();
+
+                    if (player == Player1)
+                        Player1 = null;
+                    else
+                        Player2 = null;
+                }
+                Cells = new Cell[3, 3];
             }
         }
 

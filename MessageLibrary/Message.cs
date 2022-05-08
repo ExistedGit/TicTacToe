@@ -40,23 +40,11 @@ namespace MessageLibrary
             socket.BeginReceive(stateObject.Buffer, 0, StateObject.BufferSize, SocketFlags.None, cb, stateObject);
         }
 
-        public static Message FromNetworkStream(NetworkStream stream)
-        {
+        public static Message FromNetworkStream(NetworkStream stream) => bf.Deserialize(stream) as Message;
 
-            return bf.Deserialize(stream) as Message;
-        }
+        public static T FromNetworkStream<T>(NetworkStream stream) where T : Message => bf.Deserialize(stream) as T;
 
-        public static T FromNetworkStream<T>(NetworkStream stream) where T : Message
-        {
-
-            return bf.Deserialize(stream) as T;
-        }
-
-        public static Message FromMemoryStream(MemoryStream ms)
-        {
-
-            return bf.Deserialize(ms) as Message;
-        }
+        public static Message FromMemoryStream(MemoryStream ms) => bf.Deserialize(ms) as Message;
 
         public static Message FromByteArray(byte[] buffer)
         {
