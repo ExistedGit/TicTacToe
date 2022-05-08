@@ -173,10 +173,23 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <MultiDataTrigger.Setters>
-                                        <Setter Property="Text" Value="Enemy turn"></Setter>
+                                        <Setter Property="Text" Value="Enemy turn"/>
                                     </MultiDataTrigger.Setters>
 
                                 </MultiDataTrigger>
+
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMyTurn}" Value="True"/>
+                                        <Condition Binding="{Binding IsGameRunning}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="{Binding CurrentEnemy}"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
