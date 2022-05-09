@@ -127,7 +127,6 @@ namespace Client
                 Client = new TcpClientWrap(ipAddress, port);
 
                 Client.Connected += OnClientConnected;
-                Client.Disconnected += OnClientDisconnected;
                 Client.ConnectFailed += OnConnectedFailed;
                 Client.MessageSent += OnMessageSent;
                 Client.MessageReceived += OnMessageReceived;
@@ -155,8 +154,6 @@ namespace Client
         {
             Client = null;
             IsFindingEnemy = false;
-
-
             Dispatcher.Invoke(() =>
             {
                 TB_ServerAddres.IsEnabled = true;
@@ -167,14 +164,16 @@ namespace Client
           
         }
 
-        private void OnClientDisconnected(TcpClientWrap client)
+        private void OnClientDisconnected()
         {
-            IsFindingEnemy = false;
-            Client = null;
-            TB_ServerAddres.IsEnabled = true;
-            BTN_ConnectToServer.IsEnabled = true;
-            TB_UserName.IsEnabled = true;
-
+            Dispatcher.Invoke(() =>
+            {
+                IsFindingEnemy = false;
+                Client = null;
+                TB_ServerAddres.IsEnabled = true;
+                BTN_ConnectToServer.IsEnabled = true;
+                TB_UserName.IsEnabled = true;
+            });
         }
 
         private void OnMessageReceived(TcpClientWrap client, Message message)
@@ -268,7 +267,11 @@ namespace Client
 
                     break;
                 }
-                   
+                case "UserDisconnectMessage":
+                    {
+                        OnClientDisconnected();
+                    }
+                    break;
                     
                  
 

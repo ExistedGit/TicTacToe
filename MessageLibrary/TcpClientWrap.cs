@@ -3,20 +3,22 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 namespace MessageLibrary
 {
     public class TcpClientWrap
     {
 
+
         private IPEndPoint endPoint;
         private TcpClient client;
         public TcpClient Tcp => client;
 
-        public event Action<TcpClientWrap> Connected;
-        public event Action<TcpClientWrap> Disconnected;
+        public event ClientHandler Connected;
+        public event ClientHandler Disconnected;
 
-        public event MessageHandler MessageReceived;
+        public event ClientMessageHandler MessageReceived;
         public event Action<Message> MessageSent;
 
         public TcpClientWrap(IPAddress ip, int port)
@@ -104,7 +106,7 @@ namespace MessageLibrary
 
         public bool Send(Message message)
         {
-            if (client != null & client.Connected)
+            if (client != null && client.Connected)
             {
                 message.StreamTo(client.GetStream());
                 MessageSent?.Invoke(message);
@@ -118,7 +120,7 @@ namespace MessageLibrary
         /// <param name="message">Сообщение</param>
         /// <returns>Была ли начата операция отправки</returns>
         public bool SendAsync(Message message) {
-            if (client != null & client.Connected)
+            if (client != null && client.Connected)
             {
                 message.SendToAsync(Tcp.Client, SendCB);
                 return true;
@@ -128,12 +130,13 @@ namespace MessageLibrary
         private void SendCB(IAsyncResult ar) {
             StateObject state = (StateObject)ar.AsyncState;
             state.Socket.EndSend(ar);
+
             MessageSent?.Invoke(Message.FromByteArray(state.Buffer));
         }
 
         public Message Receive()
         {
-            if (client != null & client.Connected)
+            if (client != null && client.Connected)
             {
                 var message = Message.FromNetworkStream(client.GetStream());
                 MessageReceived?.Invoke(this, message);
@@ -143,7 +146,7 @@ namespace MessageLibrary
         }
         public bool ReceiveAsync()
         {
-            if (client != null & client.Connected)
+            if (client != null && client.Connected)
             {
                 Message.ReceiveFromSocket(Tcp.Client, ReceiveCB);
                 return true;
@@ -156,6 +159,8 @@ namespace MessageLibrary
             Socket socket = state.Socket;
             try
             {
+                if (Tcp == null)
+                    return;
                 int bytesRead = Tcp.Client.EndReceive(ar);
                 if (bytesRead > 0)
                 {
@@ -165,7 +170,7 @@ namespace MessageLibrary
                     socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, SocketFlags.None, ReceiveCB, state);
                 }
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 Disconnected?.Invoke(this);
                 Console.WriteLine("TcpClientWrap.Receive: SOCKET EXCEPTION");

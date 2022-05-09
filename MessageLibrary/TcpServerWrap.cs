@@ -8,12 +8,16 @@ using System.Threading.Tasks;
 
 namespace MessageLibrary
 {
-    public delegate void MessageHandler(TcpClientWrap client, Message msg);
+    public delegate void ClientMessageHandler(TcpClientWrap client, Message msg);
+    public delegate void ServerHandler(TcpServerWrap server);
+    public delegate void ClientHandler(TcpClientWrap client);
+
     public class TcpServerWrap
     {
-        public event Action<TcpServerWrap> Started;
-        public event Action<TcpClientWrap> ClientConnected;
-        public event Action<TcpClientWrap> ClientDisconnected;
+        public event ServerHandler Started;
+        public event ClientHandler ClientConnected;
+        public event ClientHandler ClientDisconnected;
+        public event ServerHandler Disconnected;
         private TcpListener listener;
 
         public void Start(int port)
@@ -33,7 +37,7 @@ namespace MessageLibrary
                 } while (true);
             });
         }
-        public event MessageHandler MessageReceived;
+        public event ClientMessageHandler MessageReceived;
         private void Receive(TcpClient client)
         {
             TcpClientWrap user = new TcpClientWrap(client);
@@ -44,7 +48,6 @@ namespace MessageLibrary
             {
                 user.Receive();
             } while (user.Tcp.Client.Available > 0);
-            user.Disconnect();
         }
         private void ReceiveAsync(TcpClient client)
         {
@@ -63,6 +66,7 @@ namespace MessageLibrary
 
         public void Shutdown()
         {
+            Disconnected?.Invoke(this);
             listener?.Stop();
         }
     }

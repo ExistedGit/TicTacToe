@@ -28,7 +28,6 @@ namespace MessageLibrary
         }
         public void StreamTo(Stream stream)
         {
-
             bf.Serialize(stream, this);
         }
 
@@ -48,7 +47,6 @@ namespace MessageLibrary
 
         public static Message FromByteArray(byte[] buffer)
         {
-
             MemoryStream ms = new MemoryStream(buffer);
             return bf.Deserialize(ms) as Message;
         }
