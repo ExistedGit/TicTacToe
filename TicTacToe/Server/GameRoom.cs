@@ -40,13 +40,11 @@ namespace Server
                 for (int j = 0; j < 3; j++)
                     Cells[i, j] = new Cell(i + 1, j + 1);
         }
-        const bool DEBUG = true;
         private Player WhoseTurn;
         public void StartGame(bool addEvents = false)
         {
             RefillCells();
             bool turn = Convert.ToBoolean(rng.Next(0, 2));
-            if (DEBUG) turn = DEBUG;
             WhoseTurn = turn ? Player1 : Player2;
             if (addEvents)
             {

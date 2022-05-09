@@ -30,8 +30,7 @@ namespace Server
         {
             Console.OutputEncoding = Encoding.Unicode;
 
-            //string input = Prompt("Введите порт для прослушивания: ");
-            string input = "5000";
+            string input = Prompt("Введите порт для прослушивания: ");
             int port = -1;
             if (!int.TryParse(input, out port))
             {
